@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="N, NP, NPC and NPH Problems">
+<meta property="og:type" content="article">
+<meta property="og:title" content="N, NP, NPC and NPH Problems">
+<meta property="og:url" content="https://changyukang.github.io/2017/02/16/Programming/Algorithm_and_Data_Structure/Computational_Complexity_Theory/N,%20NP,%20NPC%20and%20NPH%20Problems/index.html">
+<meta property="og:site_name" content="Kiwi-Theo">
+<meta property="og:description" content="N, NP, NPC and NPH Problems">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://changyukang.github.io/2017/02/16/Programming/Algorithm_and_Data_Structure/Computational_Complexity_Theory/N,%20NP,%20NPC%20and%20NPH%20Problems/resources/437FA1CC122C25285B4E7B3D1515DCE4.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2017/02/16/Programming/Algorithm_and_Data_Structure/Computational_Complexity_Theory/N,%20NP,%20NPC%20and%20NPH%20Problems/resources/F08676C44A1B666570FEEE46F5D2686C.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2017/02/16/Programming/Algorithm_and_Data_Structure/Computational_Complexity_Theory/N,%20NP,%20NPC%20and%20NPH%20Problems/resources/EAEF99CD3BD54E75B5DF7ADD92FD97AD.jpg">
+<meta property="article:published_time" content="2017-02-15T19:12:06.000Z">
+<meta property="article:modified_time" content="2021-01-10T04:19:11.633Z">
+<meta property="article:author" content="Theo">
+<meta property="article:tag" content="Computational_Complexity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://changyukang.github.io/2017/02/16/Programming/Algorithm_and_Data_Structure/Computational_Complexity_Theory/N,%20NP,%20NPC%20and%20NPH%20Problems/resources/437FA1CC122C25285B4E7B3D1515DCE4.jpg">
+
+
+<link rel="canonical" href="https://changyukang.github.io/2017/02/16/Programming/Algorithm_and_Data_Structure/Computational_Complexity_Theory/N,%20NP,%20NPC%20and%20NPH%20Problems/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>N, NP, NPC and NPH Problems | Kiwi-Theo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Kiwi-Theo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#N-NP-NPC-and-NPH-Problems"><span class="nav-number">1.</span> <span class="nav-text">N, NP, NPC and NPH Problems</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-P%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">1. P类问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-NP-%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">2. NP 类问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-P-%EF%BC%9FNP"><span class="nav-number">1.3.</span> <span class="nav-text">3. P &#x3D;？NP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-NPC%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">4. NPC类问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-NP%E9%9A%BE%E9%97%AE%E9%A2%98%EF%BC%88NPH-NP-hard%E9%97%AE%E9%A2%98%EF%BC%89%EF%BC%9A"><span class="nav-number">1.5.</span> <span class="nav-text">5. NP难问题（NPH:NP-hard问题）：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%90%84%E7%B1%BB%E9%97%AE%E9%A2%98%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.6.</span> <span class="nav-text">6. 各类问题的关系</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Theo"
+      src="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+  <p class="site-author-name" itemprop="name">Theo</p>
+  <div class="site-description" itemprop="description">Never late to study</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/changyukang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;changyukang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiwichangyu.kang@gmail.com" title="E-Mail → mailto:kiwichangyu.kang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2017/02/16/Programming/Algorithm_and_Data_Structure/Computational_Complexity_Theory/N,%20NP,%20NPC%20and%20NPH%20Problems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+      <meta itemprop="name" content="Theo">
+      <meta itemprop="description" content="Never late to study">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi-Theo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          N, NP, NPC and NPH Problems
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-02-16 03:12:06" itemprop="dateCreated datePublished" datetime="2017-02-16T03:12:06+08:00">2017-02-16</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-10 12:19:11" itemprop="dateModified" datetime="2021-01-10T12:19:11+08:00">2021-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Computational-Complexity-Theory/" itemprop="url" rel="index"><span itemprop="name">Computational_Complexity_Theory</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">N, NP, NPC and NPH Problems</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="N-NP-NPC-and-NPH-Problems"><a href="#N-NP-NPC-and-NPH-Problems" class="headerlink" title="N, NP, NPC and NPH Problems"></a>N, NP, NPC and NPH Problems</h1><h2 id="1-P类问题"><a href="#1-P类问题" class="headerlink" title="1. P类问题"></a>1. P类问题</h2><p>存在多项式时间算法的问题(P：polynominal，多项式)。<br>我们只在乎一个问题是否存在多项式算法，因为一个时间复杂度比多项式算法还要复杂的算法研究起来是没有任何实际意义的。</p>
+<h2 id="2-NP-类问题"><a href="#2-NP-类问题" class="headerlink" title="2. NP 类问题"></a>2. NP 类问题</h2><p>能在多项式时间内验证一个解是否正确的问题(NP:Nondeterministic polynominal，非确定性多项式)。<br>P类问题是NP问题的子集，因为存在多项式时间解法的问题，总能在多项式时间内验证他。</p>
+<h2 id="3-P-？NP"><a href="#3-P-？NP" class="headerlink" title="3. P =？NP"></a>3. P =？NP</h2><p>是否 NP类问题=P类问题？即，是否所有能在多项式时间内验证得出正确解的问题，都是具有多项式时间算法的问题呢？<br>要是解决了这个问题，那所有的NP问题都可以通过计算机来解决.</p>
+<p><a target="_blank" rel="noopener" href="http://www.matrix67.com/blog/archives/2552">1. 假如P=NP，世界将会怎样？</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.matrix67.com/data/average.ps">2. A Personal View of Average􏰀Case   Complexity</a></p>
+<h2 id="4-NPC类问题"><a href="#4-NPC类问题" class="headerlink" title="4. NPC类问题"></a>4. NPC类问题</h2><p>对于同一类的所有的NP类问题，若他们都可以在多项式时间内约化成最难的一个NP类问题（我们直观的认为，被约化成的问题应具有比前一个问题更复杂的时间复杂度），当我们针对这个时间复杂度最高的超级NP问题要是能找到他的多项式时间算法的话，那就等于变向的证明了其下的所有问题都是存在多项式算法的，即NP=P；这一类问题就是 NPC 类问题。</p>
+<p>NPC类问题（Nondeterminism Polynomial complete）：存在这样一个NP问题，所有的NP问题都可以约化成它（只要解决了这个问题，那么所有的NP问题都解决了）。<br>其定义要满足2个条件：</p>
+<ol>
+<li><strong>它得是一个NP问题</strong>；</li>
+<li><strong>所有的NP问题都可以约化到它</strong>。</li>
+</ol>
+<p>在计算复杂度理论的世界中，NPC问题，又称NP完全问题或NP完备问题，是NP（非决定性多项式时间）中最难的决定性问题。因此NP完备问题应该是最不可能被化简为P（多项式时间可决定）的决定性问题的集合。许多人推测若任何NPC问题得到多项式时间的解法，那此解法就可应用在所有NP问题上。</p>
+<p>想要证明一个问题是NPC，最简单的方法是先证明它属于NP，然后将某个已知是NPC的问题变换成它(多项式时间内变换)。因此在学习变换技巧前，先熟悉各种不同类型的NPC问题是很有用的。下表列出了一些以决定性命题表示的著名NPC问题：</p>
+<ul>
+<li>布尔可满足性问题：（Boolean satisfiability problem）（SAT）</li>
+<li>N-puzzle问题（华容道问题）:（N-puzzle）</li>
+<li>背包问题：（Knapsack problem）</li>
+<li>汉弥尔顿循环问题：（Hamiltonian cycle problem）</li>
+<li>旅行推销员问题：（Traveling salesman problem）</li>
+<li>子图同构问题：（Subgraph isomorphism problem）</li>
+<li>子集合加总问题：（Subset sum problem）</li>
+<li>分团问题：（Clique problem）</li>
+<li>顶点涵盖问题：（Vertex cover problem）</li>
+<li>独立顶点集问题：（Independent set problem）</li>
+<li>图着色问题（参见四色定理）:（Graph coloring problem）</li>
+</ul>
+<p>更多NPC问题的例子，请见NP-complete问题列表（英文版）。<br>通常一个P与NPC问题的叙述看起来只有一些不同的地方，例如3SAT问题（SAT问题的限制版本）仍然是NPC问题，但更限制的2SAT问题则是个P问题（准确的说，是NL-complete问题），而条件较为宽松的MAX 2SAT问题却又成了NPC问题。决定一个图是否能被两色涂满是P问题，但三色图是NPC问题，即使我们将它限制在平面图上。决定一个图有无循环或它是两分图很容易（在log空间等级），但是发现一个最大二分图或最大循环子图则是NPC。以一固定百分比来求郊游打包问题的最佳解可以在多项式时间解决，但是求最佳解是NPC。</p>
+<h2 id="5-NP难问题（NPH-NP-hard问题）："><a href="#5-NP难问题（NPH-NP-hard问题）：" class="headerlink" title="5. NP难问题（NPH:NP-hard问题）："></a>5. NP难问题（NPH:NP-hard问题）：</h2><p>NP-Hard问题是这样一种问题，它满足NPC问题定义的第二条但不一定要满足第一条,就是说，NP-Hard问题要比NPC问题的范围广，NP-Hard问题没有限定属于NP，即所有的NP问题都能约化到它，但是他不一定是一个NP问题；</p>
+<p>NP-Hard问题同样难以找到多项式的算法，但它不列入我们的研究范围，因为它不一定是NP问题。即使NPC问题发现了多项式级的算法，NP-Hard问题有可能仍然无法得到多项式级的算法。事实上，由于NP-Hard放宽了限定条件，它将有可能比所有的NPC问题的时间复杂度更高从而更难以解决。</p>
+<h2 id="6-各类问题的关系"><a href="#6-各类问题的关系" class="headerlink" title="6. 各类问题的关系"></a>6. 各类问题的关系</h2><p><img src="resources/437FA1CC122C25285B4E7B3D1515DCE4.jpg" alt="IMAGE"></p>
+<p><img src="resources/F08676C44A1B666570FEEE46F5D2686C.jpg" alt="IMAGE"></p>
+<ol>
+<li>P 问题能找到多项式解法，能找到必然能在多项式时间内验证，所以 P ∈ NP;</li>
+<li>NPC问题是一类可以<u>在多项式时间内进行约化</u>的问题，它们之间存在一些相似性；并且 NPC 问题首先应该是 NP 问题，所以 NPC ∈ NP；<em>但是它没有第三个条件，即约化成的 NP 问题是否有多项式解，即是不是 P 问题，它有可能约化成一个 P 问题，这样 NPC 问题集合就都有解了；它也可以约化成一个 NP 问题，暂时还没有找到多项式解，所以 NPC 集合也没有多项式解，但是可以在多项式时间内验证一个解是否正确；它还可以约化成一个 NP 问题，但是这个 NP 问题是 NPH 的（NP 问题中有一部分是 NPH 的），而<u>NPH问题是既不能在多项式内求解也不能验证一个解是否正确的问题</u>，所以相当于目前无解；</em></li>
+<li>NPH 问题是除了 NP 问题之外的问题，是既无法在多项式时间内求解也不能验证解正确性的问题，直观感觉似乎NPH应该与 NP 没有交集才对，实际上感觉上面图中的交集也不是很正确，因为它规定 NPC 问题必须是 NP 问题，而有些问题不是 NP 问题而是 NPH 的，但是它可以约化，所以这部分应该不再命名为 NPC，而是暂时命名为 <strong>NPHC</strong>,归属于 NPH 集合，并且 NP 和 NPH 集合互相独立开来；上图中的表示说明：NP 问题中有一部分是 NPH 问题，这对于两者的定义来说是矛盾的；</li>
+</ol>
+<p><img src="resources/EAEF99CD3BD54E75B5DF7ADD92FD97AD.jpg" alt="IMAGE"></p>
+<ul>
+<li>P 都是 NP，NPC 也首先都是 NP；</li>
+<li>NP 不是 NPH，NPH 问题中有一部分可以进行约化（满足 NPC 定义的第二条），但是约化成的是 NPH 问题；</li>
+<li>有一部分 NP 问题可以约化，但是约化成的是 NPH 问题，这种当前研究没有多大意义。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Computational-Complexity/" rel="tag"># Computational_Complexity</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/06/17/Programming/Algorithm_and_Data_Structure/Sorting/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F(Merge%20Sort)/" rel="prev" title="归并排序(Merge Sort)">
+                  <i class="fa fa-chevron-left"></i> 归并排序(Merge Sort)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/03/17/Programming/Algorithm_and_Data_Structure/Java/Play_Data_Structure/%E7%AC%AC%E5%8D%81%E5%9B%9B%E7%AB%A0%20%E5%93%88%E5%B8%8C%E8%A1%A8/" rel="next" title="第十四章 哈希表">
+                  第十四章 哈希表 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Theo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.4/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+
+
+<script>
+NexT.utils.loadComments('.utterances-container', () => {
+  const script = document.createElement('script');
+  script.src = 'https://utteranc.es/client.js';
+  script.setAttribute('repo', "changyukang/changyukang.github.io");
+  script.setAttribute('issue-term', "title");
+  script.setAttribute('theme', "github-light");
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  document.querySelector('.utterances-container').appendChild(script);
+});
+</script>
+
+</body>
+</html>

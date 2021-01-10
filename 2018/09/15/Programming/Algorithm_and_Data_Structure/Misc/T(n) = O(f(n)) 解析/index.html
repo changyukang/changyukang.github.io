@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="about algorithm and O(f(n))">
+<meta property="og:type" content="article">
+<meta property="og:title" content="T(n) &#x3D; O(f(n)) 解析">
+<meta property="og:url" content="https://changyukang.github.io/2018/09/15/Programming/Algorithm_and_Data_Structure/Misc/T(n)%20=%20O(f(n))%20%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="Kiwi-Theo">
+<meta property="og:description" content="about algorithm and O(f(n))">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://changyukang.github.io/2018/09/15/Programming/Algorithm_and_Data_Structure/Misc/T(n)%20=%20O(f(n))%20%E8%A7%A3%E6%9E%90/media/15368194954352/15368198352876.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2018/09/15/Programming/Algorithm_and_Data_Structure/Misc/T(n)%20=%20O(f(n))%20%E8%A7%A3%E6%9E%90/media/15368194954352/15368198805892.jpg">
+<meta property="article:published_time" content="2018-09-14T19:02:00.000Z">
+<meta property="article:modified_time" content="2021-01-10T04:19:11.767Z">
+<meta property="article:author" content="Theo">
+<meta property="article:tag" content="Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://changyukang.github.io/2018/09/15/Programming/Algorithm_and_Data_Structure/Misc/T(n)%20=%20O(f(n))%20%E8%A7%A3%E6%9E%90/media/15368194954352/15368198352876.jpg">
+
+
+<link rel="canonical" href="https://changyukang.github.io/2018/09/15/Programming/Algorithm_and_Data_Structure/Misc/T(n)%20=%20O(f(n))%20%E8%A7%A3%E6%9E%90/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>T(n) = O(f(n)) 解析 | Kiwi-Theo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Kiwi-Theo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#T-n-O-f-n-%E8%A7%A3%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">T(n) &#x3D; O(f(n)) 解析</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Theo"
+      src="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+  <p class="site-author-name" itemprop="name">Theo</p>
+  <div class="site-description" itemprop="description">Never late to study</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/changyukang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;changyukang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiwichangyu.kang@gmail.com" title="E-Mail → mailto:kiwichangyu.kang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2018/09/15/Programming/Algorithm_and_Data_Structure/Misc/T(n)%20=%20O(f(n))%20%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+      <meta itemprop="name" content="Theo">
+      <meta itemprop="description" content="Never late to study">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi-Theo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          T(n) = O(f(n)) 解析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-09-15 03:02:00" itemprop="dateCreated datePublished" datetime="2018-09-15T03:02:00+08:00">2018-09-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-10 12:19:11" itemprop="dateModified" datetime="2021-01-10T12:19:11+08:00">2021-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm_and_Data_Structure</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/Misc/" itemprop="url" rel="index"><span itemprop="name">Misc</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">about algorithm and O(f(n))</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="T-n-O-f-n-解析"><a href="#T-n-O-f-n-解析" class="headerlink" title="T(n) = O(f(n)) 解析"></a>T(n) = O(f(n)) 解析</h1><p>$f(n)$ 是关于问题规模 n 的一个函数, 为基本语句执行次数关于 n 的一个函数。这里 n 表示的是待处理数据的个数，而$f(n)$则是一套语句执行的次数（times）. 以此可以画出一条当 n 从小大时语句执行次数的函数曲线。</p>
+<p>times 与 T是正相关的，执行次数就相当于时间（只是在不不同机器不同语言下，相同次数时间不等，所以不是精确的对应时间 – 算法复杂度描述的也不是具体的时间，而是问题规模 n 变大之后，时间的变化趋势），在相同问题下（同样规模）， times越多，$T(n)$就越大。</p>
+<ol>
+<li><p>另附：典型函数复杂度曲线<br><img src="media/15368194954352/15368198352876.jpg" alt="-w547"><br><img src="media/15368194954352/15368198805892.jpg" alt="-w539"></p>
+</li>
+<li><p>复杂度评估</p>
+<ul>
+<li><p>以冒泡排序为例，要经历n-1次外部循环，对于每次外部循环，内部循环要执行 n-i-1次。整体来说，对于一个倒序数组（最差情况），内部交换语句执行的次数依次为：n-1, n-2, …, 1，所以时间复杂度为$O(n^2)$. 对于最好情况，数组已经有序了，此时按照下面代码，内部循环还是要进行 n-i-1次两两比较（虽然没有发生交换），所以这部分时间复杂度也是$O(n)$,再算上外部的 n-1次循环，所以整体也是$O(n^2)$. 那是不是冒泡排序最好情况就是$O(n^2)$了呢？不是的，这跟代码有关，下面的代码确实是这样的，但是进行优化后，就可以避免这种外部的循环执行那么多次，对于有序的序列，加上一个标志位，就可以在第一次两两比较时确定数组有序，循环就可以终止了，代码参见（2），相关文章参见：<a target="_blank" rel="noopener" href="https://blog.csdn.net/spaceyqy/article/details/39392593">冒泡排序最好情况下时间复杂度</a>：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">（<span class="number">1</span>）</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">Bubble</span> <span class="symbol">extends</span> <span class="symbol">Sorting</span>&#123;</span><br><span class="line"></span><br><span class="line">    	@Override</span><br><span class="line">    	<span class="keyword">public</span> <span class="built_in">int</span>[] sort(<span class="built_in">int</span>[] <span class="built_in">array</span>)&#123;</span><br><span class="line">    </span><br><span class="line">    		<span class="built_in">int</span> temp;</span><br><span class="line">    </span><br><span class="line">    		<span class="keyword">for</span>(<span class="built_in">int</span> i=<span class="number">0</span>; i&lt; <span class="built_in">array</span>.length<span class="number">-1</span>; i++)&#123;</span><br><span class="line">    </span><br><span class="line">                <span class="keyword">for</span>(<span class="built_in">int</span> j=<span class="number">0</span>; j&lt; <span class="built_in">array</span>.length-i<span class="number">-1</span>; j++)&#123;</span><br><span class="line">    </span><br><span class="line">                    <span class="comment">//bubble to the right</span></span><br><span class="line">                    <span class="comment">//for ascending sorting, the bigger one bubble to the right</span></span><br><span class="line">                    <span class="comment">//for descending sorting, the smaller one bubble to the right</span></span><br><span class="line">                    <span class="keyword">if</span>(<span class="built_in">array</span>[j] &gt; <span class="built_in">array</span>[j+<span class="number">1</span>])&#123;</span><br><span class="line">                        temp = <span class="built_in">array</span>[j];</span><br><span class="line">                        <span class="built_in">array</span>[j] = <span class="built_in">array</span>[j+<span class="number">1</span>];</span><br><span class="line">                        <span class="built_in">array</span>[j+<span class="number">1</span>] = temp;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    </span><br><span class="line">    		<span class="keyword">return</span> <span class="built_in">array</span>;</span><br><span class="line">    	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    （<span class="number">2</span>）</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">void</span> bubbleSort(<span class="built_in">int</span> arr[]) &#123;</span><br><span class="line">        <span class="built_in">bool</span>ean didSwap;</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>, len = arr.length; i &lt; len - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            didSwap = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; len - i - <span class="number">1</span>; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(arr[j + <span class="number">1</span>] &lt; arr[j]) &#123;</span><br><span class="line">                    swap(arr, j, j + <span class="number">1</span>);</span><br><span class="line">                    didSwap = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">            <span class="keyword">if</span>(didSwap == <span class="literal">false</span>)</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">    &#125;    </span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>对于数组遍历，一个循环基本语句运行 n 次，所以是$O(n)$ 复杂度；同理，对于二重循环遍历，基本语句执行次数为$n*n = n^2$次，所以复杂度为$O(n^2)$. 上面的Bubble虽然也是两重循环，但是由于第二层循环并不是每次都执行基本语句（交换数组元素），所以它的时间跟这里的二重循环遍历是有差异的，但是整体来讲，它们都是$O(n^2)$.</p>
+</li>
+<li><p>对于二分查找等，每次数据砍掉一半，这种算法的时间复杂度是$O(log_2^n)$, 如果外边再套一层 for 循环，那么它的时间复杂度将是：$O(nlog_2^n)$.</p>
+<ul>
+<li><p>$O(log_2^n)$ 和 $O(log_{10}^n)$ 即$O(lg^n)$本质是一样的，因为这两个对数之间相差的是常数倍（根据对数运算法则），常数阶对于算法复杂度没有太大影响。</p>
+</li>
+<li><p>算法复杂度分析(二分查找)</p>
+<p>  <strong>About complexity</strong></p>
+<p>  Take binary search for example. The complexity of binary search is $log_2^n$, but what does it mean? For binary search, every time the remaining number will be half of the original number($n/2/2/2/2/2…/2 == n/2^t$) until the number equals 1. So the the search times is the number of 2 (that is, the number of the operation of dividing 2) . ($log_2^n$) is just exactly the times(t) of this operation. So the result of $log_2^n$ represents the operation times. The operation times also stands for the running time of the algorithm.<br>  ps: The complexity is the “running times” of the program and it is also the “running time” of the program.</p>
+</li>
+</ul>
+</li>
+<li><p>对于归并（Merge sorting）排序，每次将待排序数组<strong>分成两部分</strong>（归并排序每次两两归并，一共有logN趟，而每趟的时间复杂度为O(N)），这个两部分的划分是以数组索引来确定的，所以不管数组是否有序或者倒序，或者乱序，都不影响分组。有这个一分为二的操作，那么就有$log_2^n$的因子；对于对应的每次归并操作，都要遍历两个数组元素，比较其大小，时间复杂度为$O(n)$. 所以归并排序时间复杂度最差情况也为$O(nlog_2^n)$.</p>
+</li>
+<li><p>对于快速（Quick sorting）排序，也是将待排序数组分成两部分，但是这个划分是有区别的，对于有序或者倒叙数组，每次划分实际上都只得到一个数组（pivot 左边数组为空或者右边数组为空）这时并没有实现一分为二的目的，所以递归次数并不是 $log_2^n$, 而是$n$, 再算上每次再以 pivot 值将数组一分为二时，需要从左和从右双向扫描数组（实现大于 pivot 的元素放在 pivot 右边，小于 pivot 的元素放在 pivot 左边），所以乘以$n$,所以在有序或者倒叙情况下，快排的时间复杂度是$O(n^2)$; 当为乱序的情况时，数组可以一分为二，此时时间复杂度为$O(nlog_2^n)$.</p>
+</li>
+<li><p>对于插入排序(Insertion sorting), 要经历从第二个元素开始到最后一个元素的遍历，时间复杂度为$O(n)$，并且对于每一次遍历,要将选中的元素与其前面的所有元素进行一轮比较（时间复杂度也为$O(n)$），所以插入排序时间复杂度为$O(n^2)$; 而对于最好的情况，数组已经有序时（包括数组中所有元素值都一样的情况），此时虽然也要经历 n-1 次遍历（$O(n)$），<del>并且对于每次遍历，也需要将其与它前面的所有元素比较，但是因为数组有序，所以不需要进行 swap 的操作，但是这不意味着这部分的时间复杂度是$O(1)$,因为还是要进行大小比较，只是不交换罢了，所以这部分时间复杂度还是$O(n)$</del>，对于每次遍历，所取的要进行比较的那个元素前面已经是有序的了，所以找到一个小于等于改元素值的元素，就不需要再往左比较了。那么最好情况下，数组有序或者元素相同，那么每次遍历到的那个元素只需要跟它前面的一个元素比较就会发现它本身就是最大的，所以循环就跳出了，故此这部分的时间复杂度是$O(1)$,所以插入排序最好情况下时间复杂度为$O(n)$.<br>相关文章参见：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiqingwu/p/insertion_sort_algorithm.html">插入排序及其复杂度分析</a></p>
+</li>
+</ul>
+</li>
+<li><p>补充：空间复杂度</p>
+<ul>
+<li>空间复杂度表示为$S(n) = O(f(n))$， 其中f(n)为语句关于 n 的所占存储空间的函数。</li>
+<li>除了存储程序、输入数据之外（这些与算法无关）， 还有在算法执行过程中需要分配的辅助空间，空间复杂度考虑的是这一块辅助空间随问题规模 n 变化的趋势。如果一个算法在运行时，开辟的辅助空间与问题规模无关或是一个常数，那么这个算法的空间复杂度为$O(1)$.</li>
+</ul>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/08/Programming/Algorithm_and_Data_Structure/Misc/%E9%80%92%E5%BD%92%EF%BC%88recursion%EF%BC%89%E5%92%8C%E9%80%92%E6%8E%A8%EF%BC%88iteration%EF%BC%89%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%88differences%EF%BC%89/" rel="prev" title="Recursion and iteration (递归、递推和迭代)">
+                  <i class="fa fa-chevron-left"></i> Recursion and iteration (递归、递推和迭代)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/02/11/%E8%8B%B1%E8%AF%AD/%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0%E6%84%9F%E6%82%9F%EF%BC%88English%20Study%20Reflection%EF%BC%89/" rel="next" title="英语学习感悟（English Study Reflection）">
+                  英语学习感悟（English Study Reflection） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Theo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.4/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+
+
+<script>
+NexT.utils.loadComments('.utterances-container', () => {
+  const script = document.createElement('script');
+  script.src = 'https://utteranc.es/client.js';
+  script.setAttribute('repo', "changyukang/changyukang.github.io");
+  script.setAttribute('issue-term', "title");
+  script.setAttribute('theme', "github-light");
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  document.querySelector('.utterances-container').appendChild(script);
+});
+</script>
+
+</body>
+</html>

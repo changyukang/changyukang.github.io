@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="About quick sorting">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3. Quick Sroting (快速排序)">
+<meta property="og:url" content="https://changyukang.github.io/2018/08/15/Programming/Algorithm_and_Data_Structure/Python/First_Bundle_of_Algorithm/%E7%AB%A0%E8%8A%824%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/index.html">
+<meta property="og:site_name" content="Kiwi-Theo">
+<meta property="og:description" content="About quick sorting">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-08-15T12:36:33.000Z">
+<meta property="article:modified_time" content="2021-01-10T04:19:11.770Z">
+<meta property="article:author" content="Theo">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Sorting">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://changyukang.github.io/2018/08/15/Programming/Algorithm_and_Data_Structure/Python/First_Bundle_of_Algorithm/%E7%AB%A0%E8%8A%824%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>3. Quick Sroting (快速排序) | Kiwi-Theo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Kiwi-Theo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E9%80%92%E5%BD%92"><span class="nav-number">1.</span> <span class="nav-text">4.1 递归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E6%A0%88%E4%B8%8E%E8%B0%83%E7%94%A8%E6%A0%88"><span class="nav-number">2.</span> <span class="nav-text">4.2 栈与调用栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%E5%88%86%E8%80%8C%E6%B2%BB%E4%B9%8B"><span class="nav-number">3.</span> <span class="nav-text">4.3 分而治之</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="nav-number">4.</span> <span class="nav-text">4.4 快速排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-1-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E6%A6%82%E8%BF%B0"><span class="nav-number">4.1.</span> <span class="nav-text">4.4.1 快速排序概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-2-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E7%A8%8B%E5%BA%8F%E8%A1%A8%E7%A4%BA%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">4.4.2 快速排序的程序表示法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-3-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%A7-O-%E8%A1%A8%E7%A4%BA%E6%B3%95"><span class="nav-number">4.3.</span> <span class="nav-text">4.4.3 快速排序的大 O 表示法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-4-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%B9%B3%E5%9D%87%E6%83%85%E5%86%B5%E5%92%8C%E6%9C%80%E5%9D%8F%E6%83%85%E5%86%B5"><span class="nav-number">4.4.</span> <span class="nav-text">4.4.4 快速排序的平均情况和最坏情况</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Theo"
+      src="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+  <p class="site-author-name" itemprop="name">Theo</p>
+  <div class="site-description" itemprop="description">Never late to study</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/changyukang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;changyukang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiwichangyu.kang@gmail.com" title="E-Mail → mailto:kiwichangyu.kang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2018/08/15/Programming/Algorithm_and_Data_Structure/Python/First_Bundle_of_Algorithm/%E7%AB%A0%E8%8A%824%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+      <meta itemprop="name" content="Theo">
+      <meta itemprop="description" content="Never late to study">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi-Theo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          3. Quick Sroting (快速排序)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-08-15 20:36:33" itemprop="dateCreated datePublished" datetime="2018-08-15T20:36:33+08:00">2018-08-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-10 12:19:11" itemprop="dateModified" datetime="2021-01-10T12:19:11+08:00">2021-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm_and_Data_Structure</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/Python/First-Bundle-of-Algorithm/" itemprop="url" rel="index"><span itemprop="name">First_Bundle_of_Algorithm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">About quick sorting</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="4-1-递归"><a href="#4-1-递归" class="headerlink" title="4.1 递归"></a>4.1 递归</h2><p><strong>递归</strong>：程序调用自身的编程技巧，可以减少代码量<br><em>例子</em>：</p>
+<ol>
+<li><p>斐波那契数列: 每一个元素都是其前面两个数之和<br>$1,1,2,3,5,8,13,21…Fib$<br>$Fib(n) = Fib(n-1) + Fib(n-2)$</p>
+</li>
+<li><p>阶乘： $n! = n*(n-1)<em>(n-2)</em>…*1$<br>$n! = (n-1)! * n$</p>
+</li>
+<li><p>德罗斯效应<br>有很多盒子，每个盒子中又有很多盒子，盒子里面又有很多盒子，在其中一个盒子中有一个 key.</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">递归伪码：</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">look_for_key</span>(<span class="params">box</span>):</span></span><br><span class="line">  <span class="keyword">for</span> item <span class="keyword">in</span> box:      //item 是外层盒子里面的一个盒子</span><br><span class="line">    <span class="keyword">if</span> item is_box():</span><br><span class="line">      look_for_key(item)</span><br><span class="line">    <span class="keyword">elif</span> item.is_key():</span><br><span class="line">      <span class="built_in">print</span> <span class="string">&quot;found key!&quot;</span></span><br></pre></td></tr></table></figure>
+<p><strong>递归缺点</strong>：多次函数调用，占用太多的内存空间<br><strong>递归优点</strong>：程序简洁，易于理解</p>
+<h2 id="4-2-栈与调用栈"><a href="#4-2-栈与调用栈" class="headerlink" title="4.2 栈与调用栈"></a>4.2 栈与调用栈</h2><p>承接上节：递归</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/*倒计时*/</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countdown</span>(<span class="params">i</span>)</span></span><br><span class="line"><span class="function">  <span class="title">print</span> <span class="title">i</span></span></span><br><span class="line"><span class="function">  <span class="title">countdown</span>(<span class="params">i-<span class="number">1</span></span>)</span></span><br><span class="line"><span class="function">  </span></span><br><span class="line"><span class="function">调用上面递归函数</span></span><br><span class="line"><span class="function"><span class="title">print</span> <span class="title">countdown</span>(<span class="params"><span class="number">10</span></span>)</span></span><br></pre></td></tr></table></figure>
+<p><strong>问题</strong>：上面程序没有递归截止条件，所以打印到0后还会继续打印-1，-2 …，修改为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/*倒计时*/</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countdown</span>(<span class="params">i</span>)</span></span><br><span class="line"><span class="function">  <span class="title">print</span> <span class="title">i</span></span></span><br><span class="line">  if i&lt;=0:        //截止条件</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    countdown(i-<span class="number">1</span>)</span><br><span class="line">  </span><br><span class="line">调用上面递归函数</span><br><span class="line"><span class="built_in">print</span> countdown(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>调用栈</strong>：压入、弹出<br>存储函数调用关系的栈称为“<em>调用栈</em> ”</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greet</span>(<span class="params">name</span>)</span></span><br><span class="line">  print &quot;hello, &quot; + name&quot;!&quot;</span><br><span class="line">  greet2(name)</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&quot;getting ready to say bye&quot;</span></span><br><span class="line">  bye()</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greet2</span>(<span class="params">name</span>)</span></span><br><span class="line">  print &quot;how are you, &quot; +name+&quot;?&quot;</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bye</span>()</span></span><br><span class="line">  print &quot;ok, bye!&quot;</span><br><span class="line">  </span><br><span class="line">//调用上面的函数</span><br><span class="line">greet(<span class="string">&quot;Dave&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>递归调用栈</strong>: 也是函数调用，只不过调用的都是自身，是递归调用<br>阶乘：factorial<br>$f(5) = 5! = 5<em>4</em>3<em>2</em>1$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span>(<span class="params">x</span>):</span></span><br><span class="line">  <span class="keyword">if</span> x = <span class="number">1</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">return</span> x*f(x-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>|递|归|调|用|栈|<br>|-|-|-|-|-|-|<br>|$f(5)$|<br>|$x=5$|$f(4)$|<br>||$x=4$|$f(3)$|<br>|||$x=3$|$f(2)$|<br>||||$x=2$|$f(1)$|</p>
+<p>求 f(5)必须先求 f(4)、f(3)、f(2)、f(1)，所以变量占内存空间较大。<br>递归使用的就是调用栈。</p>
+<h2 id="4-3-分而治之"><a href="#4-3-分而治之" class="headerlink" title="4.3 分而治之"></a>4.3 分而治之</h2><p><strong>算法的核心</strong>：<br><em>分治</em>：分而治之（divide and conquer）<br><em>例子</em>：土地分割</p>
+<p>|长：168m 宽64m|<br>|-|-|</p>
+<p>一个长168m,宽64m 的长方形面积，要求划分成<strong>尽可能大</strong>的<strong>正方形</strong>。<br><strong>做法</strong>：直接取长度的一半不可以，因为长是84m，不等于宽64m.所以应该先以短边为基准划分成两个64*64的正方形和一个40*64的长方形，然后同样的方式划分这个长方形，依次进行下去。</p>
+<p>上面是把这么大一块土地进行分割，就不要整体考虑了，把它分成不同的小部分进行处理。（<em>感觉这个做分治的思想例子不是很合理，容易理解成递归</em>）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">求和：</span><br><span class="line">arr = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>]</span><br><span class="line"><span class="built_in">sum</span>(arr) = <span class="number">12</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span>(<span class="params">arr</span>)</span></span><br><span class="line">  total = 0</span><br><span class="line">  <span class="keyword">for</span> x <span class="keyword">in</span> arr:</span><br><span class="line">    total += x</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> total</span><br></pre></td></tr></table></figure>
+<p>上面是使用循环的方式进行的，这节讲的是递归，所以下面使用递归的方式进行处理</p>
+<p><strong>基线条件</strong>：</p>
+<ol>
+<li>空数组</li>
+<li>一个元素的数组</li>
+</ol>
+<p>上面的数组就可以这样递归：<br>sum[2,4,6] = 2 + sum[4,6] = 2 + 4 + sum[6](这里 sum[6]就符合上面的基线条件2了)</p>
+<h2 id="4-4-快速排序"><a href="#4-4-快速排序" class="headerlink" title="4.4 快速排序"></a>4.4 快速排序</h2><h3 id="4-4-1-快速排序概述"><a href="#4-4-1-快速排序概述" class="headerlink" title="4.4.1 快速排序概述"></a>4.4.1 快速排序概述</h3><p><strong>快速排序</strong>：优雅</p>
+<p>C语言：qsort(quick sort)<br>基线条件：空数组或者只有一个元素的数组（<em>这里都是基于数组的排序，基于链表的如何实现呢？</em>）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quicksort</span>(<span class="params">arr</span>)</span></span><br><span class="line"><span class="function">  <span class="title">if</span> <span class="title">len</span>(<span class="params">arr</span>) &lt; 2     //基线条件</span></span><br><span class="line"><span class="function">    <span class="title">return</span> <span class="title">arr</span></span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>如果是两个元素的数组：</p>
+<table>
+<thead>
+<tr>
+<th>x</th>
+<th>y</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>如果 x &gt; y，并且是要求从小到大排序的话，直接两个互换即可。</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>对于三个元素的数组：</p>
+<table>
+<thead>
+<tr>
+<th>15</th>
+<th>33</th>
+<th>10</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>此时需要分治的思想。假设取15为基准值，那么上面的值可以分成两部分，比15小的放在基准值15的左边，比15大的放在基准值15的右边。这样就把除基准值之外的元素分成两个区了（10）15（33）。假设这两个区都是有序的，那么这整个数组就是有序的了。所以只需要在分别对这两个区的元素做排序即可（同样适用分治的思想）。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>取基准值为15，一般基准值都取第一个元素的值</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>quicksort([33,15,10]) = quicksort([10]) + [15] + quicksort([33])</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<ol start="3">
+<li>对于四个元素的数组，同样的思路，步骤如下：</li>
+</ol>
+<ul>
+<li>选基准值，一般取第一个元素的值</li>
+<li>把元素进行分区，小于基准值的放左边，大于基准值的放右边（<strong>分治</strong>）</li>
+<li>对这两个区同样进行上面的操作（<strong>递归</strong>）</li>
+</ul>
+<h3 id="4-4-2-快速排序的程序表示法"><a href="#4-4-2-快速排序的程序表示法" class="headerlink" title="4.4.2 快速排序的程序表示法"></a>4.4.2 快速排序的程序表示法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quicksort</span>(<span class="params">arr</span>)：</span></span><br><span class="line"><span class="function">  <span class="title">if</span> <span class="title">len</span>(<span class="params">arr</span>) &lt; 2:</span>    //递归基线条件</span><br><span class="line">    <span class="keyword">return</span> arr</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    pivot = arr[<span class="number">0</span>]    //选取基准值</span><br><span class="line">    less = []</span><br><span class="line">    greater = []      //这里定义两个数组，表示上面分治说的那两个分区</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> arr[<span class="number">1</span>:]: //因为选第一个元素为基准值，所以这里从第二个元素开始处理</span><br><span class="line">      <span class="keyword">if</span> i &lt;= pivot:</span><br><span class="line">        less.append(i)</span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">        greater.append(i)</span><br><span class="line">    </span><br><span class="line">    //分治后的分区分别再进行快速排序，并将这三个数组连接起来</span><br><span class="line">    <span class="keyword">return</span> quicksort(less) + [pivot] + quicksort(greater)    </span><br></pre></td></tr></table></figure>
+<h3 id="4-4-3-快速排序的大-O-表示法"><a href="#4-4-3-快速排序的大-O-表示法" class="headerlink" title="4.4.3 快速排序的大 O 表示法"></a>4.4.3 快速排序的大 O 表示法</h3><p>一些典型的算法复杂度回顾：<br><em>假设计算机 cpu $1$秒执行 $t = 10$ 次指令, 元素基数是 $n = 100$<em>。时间复杂度是基于</em></em>秒<strong>的，所以</strong>最终时间复杂度的结果应该转化成秒<strong>。n 是100， cpu 1s 执行10次，所以 1s 处理 n/t = 100/10 = 10个元素。下面的大 O 表示法是在1秒1条指令的基础上进行表示的，</strong>也可以理解成1秒处理一个元素**，在 cpu 1s 执行10次的基础上，下面的大 O 表示法应该为：<br>$O(log_2^n)$ —&gt; $O(log_2^{n/t})$<br>$O(n) —&gt; O(n/t)$<br>… …</p>
+<p>所以实际上的执行时间为：<br>|$O(log_2^n)$|$O(n)$|$O(n*log_2^n)$|$O(n^2)$|$O(n!)$|<br>| - | - | - | - | - |<br>| $log_2^{100/10} = 3.3s$ | $10s$ | $33s$ | $100s$ |  $42 day$ |</p>
+<p><em>cpu 实际上一秒执行运算次数太多，为了控制在一秒执行一条，可以在代码中每条执行后加一个 sleep(1)–可以只在关键部分加上这个，比如下面例子中的只在数组处理时才加上这个 sleep. 这样的模型就是1秒执行一条指令的了，可以用|$O(log_2^n)$|$O(n)$|$O(n</em>log_2^n)$|$O(n^2)$|$O(n!)$|来计算时间复杂度，并且方便代码演示，比如：*</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_item</span>(<span class="params"><span class="built_in">list</span></span>):</span></span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">list</span>:</span><br><span class="line">    sleep(<span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span> i</span><br><span class="line">    </span><br><span class="line">list1 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line">print_item(list1)</span><br><span class="line"></span><br><span class="line">这里，n 是<span class="number">5</span>（数组元素个数）, 经过 sleep（<span class="number">1</span>）后，1s 仅执行一个元素的处理。这个 <span class="built_in">print</span> 操作的时间复杂度是O(n)，所以处理<span class="number">5</span>个元素的时间应该是：O(n=<span class="number">5</span>) = 5s。运行程序可以看到<span class="number">1</span>秒仅打印一个数据。</span><br></pre></td></tr></table></figure>
+<p>一般情况下，c*n可以简要记作 n，c 是常数项，忽略不计。这个 c 在 n 很小的时候影响很大，但是当 n 很大时，c 的影响就很小了，可以忽略了。算法复杂度计算时，n 都理解为很大的一个数，所以常数项可以忽略。</p>
+<p>除此之外，当 n 比较小时，$O(n)$可能会比$O(log_2^n)$要大，但是当 n 很大，就反过来了，所以时间复杂度是后者，以 n 很大的时候计算出的（这种说法是在带常数项的情况下，比如$0.01n$ 和$0.1log_2^n$,如果 n=5，那么前者是小于后者的，但是当 n=1000000时，前者就大于后者了）。</p>
+<h3 id="4-4-4-快速排序的平均情况和最坏情况"><a href="#4-4-4-快速排序的平均情况和最坏情况" class="headerlink" title="4.4.4 快速排序的平均情况和最坏情况"></a>4.4.4 快速排序的平均情况和最坏情况</h3><p>快速排序：<br>平均情况：$O(nlog_2^n)$<br>最坏情况：$O(n^2)$</p>
+<p><strong>最坏情况例子</strong><br>|10|9|8|7|6|5|4|3|2|1|<br>|-|-|-|-|-|-|-|-|-|-|<br>这样如果要用快速排序从小到大排序，每次取每部分第一个元素为基准值，比如第一次取10，这样分成的两部分为：<br>|9|8|7|6|5|4|3|2|1|左|10|右|-|-|-|<br>|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|</p>
+<p>分完后，右边没有元素，只有左边有，这样并没有起到分治的目的。算法复杂度也没有因为分治的处理而减少。因为每次取到的都是最大值，没有起到区分的效果。</p>
+<p>但是上面的最差情况，一般不用于算法复杂度的评估，实际上用于算法评估的是平均复杂度，前面提到的典型复杂度都是平均情况。而也不会有人对上面那个已经很有序的数组进行排序操作。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+              <a href="/tags/Sorting/" rel="tag"># Sorting</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/08/15/Programming/Algorithm_and_Data_Structure/Python/First_Bundle_of_Algorithm/%E7%AB%A0%E8%8A%823%EF%BC%9A%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" rel="prev" title="2. Selection Sorting (选择排序)">
+                  <i class="fa fa-chevron-left"></i> 2. Selection Sorting (选择排序)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/08/15/Programming/Algorithm_and_Data_Structure/Python/First_Bundle_of_Algorithm/%E7%AB%A0%E8%8A%821%EF%BC%9A%E7%AE%97%E6%B3%95%E6%A6%82%E8%BF%B0%EF%BC%9B%E7%AB%A0%E8%8A%822%EF%BC%9A%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" rel="next" title="1. Binary Search and algorithm summary(算法概述和二分查找)">
+                  1. Binary Search and algorithm summary(算法概述和二分查找) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Theo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.4/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+
+
+<script>
+NexT.utils.loadComments('.utterances-container', () => {
+  const script = document.createElement('script');
+  script.src = 'https://utteranc.es/client.js';
+  script.setAttribute('repo', "changyukang/changyukang.github.io");
+  script.setAttribute('issue-term', "title");
+  script.setAttribute('theme', "github-light");
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  document.querySelector('.utterances-container').appendChild(script);
+});
+</script>
+
+</body>
+</html>

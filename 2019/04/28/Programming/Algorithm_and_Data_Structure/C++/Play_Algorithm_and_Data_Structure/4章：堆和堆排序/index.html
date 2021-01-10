@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="4章：堆和堆排序1. 堆和优先队列 优先队列（动态）： 操作系统任务调度（一次任务执行完，又来了新的任务或者旧任务的优先级发生了变化），如果使用一般排序，每次任务执行完都要重新排序一次； 游戏中选择第一攻击对象，并存入新增加的敌人，也是动态变化的； 在 N个元素中选出前 M 个，一般排序：$O(NlogN)$; 优先队列：$O(NlogM)$; 不同数据结构实现的优先队列的时间复杂度比较： 普通数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4章：堆和堆排序">
+<meta property="og:url" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/index.html">
+<meta property="og:site_name" content="Kiwi-Theo">
+<meta property="og:description" content="4章：堆和堆排序1. 堆和优先队列 优先队列（动态）： 操作系统任务调度（一次任务执行完，又来了新的任务或者旧任务的优先级发生了变化），如果使用一般排序，每次任务执行完都要重新排序一次； 游戏中选择第一攻击对象，并存入新增加的敌人，也是动态变化的； 在 N个元素中选出前 M 个，一般排序：$O(NlogN)$; 优先队列：$O(NlogM)$; 不同数据结构实现的优先队列的时间复杂度比较： 普通数">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/5A77954373556D1946D82E9202A886B9.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/6878F84F389D2973BB135352EA587534.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/0DF63BFDB026FE9C7CD63B2AEBABD8E7.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/75229F40F9F22DB5AF646BBB4F66D400.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/D820C8BC46F077DC983DD24A417C9043.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/AD845A74AFAC09E8FB200D700B77FE52.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/9B3BFE4E512A9996FDAE1DBCF810A626.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/A391509E7DBBC1209E1DC31C3BE25112.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/2AEB5F7343B39DA8631E4AC2D7FD6F8F.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/EC2FBB69CF578CE1CF8BEF0A51A013DC.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/15300D53443E9AE3985189D9BE5FA41B.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/9E2C77898D96CE63B3AC187E4B28C9C1.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/05A0FCFD71B45961C7E5A08695452FB2.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/56A172F210FE7D6B366B7078EEF8FA32.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/07E32A0423EF06E09F36D46F142A4201.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/C22EA5B0A00663782BAC04A66ACCA5F8.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/083D9A6874720686873A30FF575DB8C1.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/9E07B7464D24CE7FC1030198DB384770.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/0DB1D3783DA0B93042FFD7C8D77B2BB0.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/81F72E3D53BF8BDD1B728AD665202327.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/E5AE4C53417CAC815712A929CD94D5C6.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/68E7DB98FC0ABAE0C49BD22C9643AD30.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/A8D980ABC00A472D778B2573CE267584.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/1124BB710010514452CAE487C9766468.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/DCB75571E90335E15B14BBBE03D8337E.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/8FC35DF88B54EB5D4F9594C1550BA01C.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/6CB02302DE6FD853F128BAB676A1B930.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/C3520E921AFC9F91F829BF60CC84E251.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/9B11C1655AAA7EAC058258160CDAC731.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/B21E1F33F1F5EEBFE229C6FA0ABE9D9F.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/A7E961A64A01E572F1542C938FB77312.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/B03ADD3A55686E07371682711F409A5D.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/22B0B7B8DFAA491B074940DE7237DAAB.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/3E8E05B374736B07E1D223C93E254DBF.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/5C389544259A2128A309C068011B7B50.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/3FB011CE4FCDC8A2526682ACC03E6B44.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/8905656C962C923C3C60F67C6A94B8A9.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/7A9B5A8742A78BB5AA223542CFD4199F.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/524A122C9163C7E62E339941FF98038C.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/DB6106E06D4D3BCA7901C9E610E5E5E6.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/653E0004A7B8CE3DC661D7818BC84031.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/61D07201B19C2074FF667E9B58990F26.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/BB69558EDACFDA5BF526C2580857CD10.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/FEB1EB04F287DCBAD0B0284435F24AD9.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/448AB46B5B1C623BAD44379676CF47E0.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/A6930DE8BD90BD867FC4ECE5A5893DBE.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/4B064AEF3FEBE119DD69AF3F5FDBDB49.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/F9CC713AC2AACD4AD00BE40AF52AB9ED.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/8D7AEE969A61132EF1D8807DECC4C26F.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/726CD5BAA06618E041812581EEE334F6.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/BB247E8E7890C9C43AF010C1412A3123.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/74B1BFAA83A689DDF652F85EEA3AFEA2.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/7E78253E9322336538755414DAA1A9E5.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/A4703881CE031B9A5FE2343EA72E838B.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/3834406EF4E18CD779C1D8F6B35CA7D8.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/8C79FC53BECEC7AF71B3DD8D21CF3D4A.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/6693E88165451F3AFCDD1950BE3A9F76.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/3BEF3A8DC3C5710F9EBC31AD6C6088B2.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/C2CEC7F7D13382946F529C2C2EE99046.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/1308D422A478FDC9BEC418406948E57B.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/A3A2EC5FA7E43A4934348B08D8A403C8.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/36527F2B443B6EE08933B15A31ADA8C3.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/55F0D9BD7DC364C2BA04797AF1E79DBF.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/CABCAFFF5246A712C37A564049E629D9.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/717696DEECF21CB5421B84E706285126.jpg">
+<meta property="article:published_time" content="2019-04-28T03:16:02.000Z">
+<meta property="article:modified_time" content="2021-01-10T04:19:11.491Z">
+<meta property="article:author" content="Theo">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Sorting">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Data Structure">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/resources/5A77954373556D1946D82E9202A886B9.jpg">
+
+
+<link rel="canonical" href="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>4章：堆和堆排序 | Kiwi-Theo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Kiwi-Theo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">4章：堆和堆排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%A0%86%E5%92%8C%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97"><span class="nav-number">1.1.</span> <span class="nav-text">1. 堆和优先队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88%E4%BB%A5%E6%9C%80%E5%A4%A7%E5%A0%86%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">2. 堆的实现（以最大堆为例）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%9F%BA%E7%A1%80%E5%A0%86%E6%8E%92%E5%BA%8F%E5%92%8C-Heapify"><span class="nav-number">1.3.</span> <span class="nav-text">3. 基础堆排序和 Heapify</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E7%B4%A2%E5%BC%95%E5%A0%86%EF%BC%88Index-Heap%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">4. 索引堆（Index Heap）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%A0%86%E5%90%8E%E7%BB%AD"><span class="nav-number">1.5.</span> <span class="nav-text">5. 堆后续</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Theo"
+      src="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+  <p class="site-author-name" itemprop="name">Theo</p>
+  <div class="site-description" itemprop="description">Never late to study</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/changyukang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;changyukang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiwichangyu.kang@gmail.com" title="E-Mail → mailto:kiwichangyu.kang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+      <meta itemprop="name" content="Theo">
+      <meta itemprop="description" content="Never late to study">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi-Theo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          4章：堆和堆排序
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-28 11:16:02" itemprop="dateCreated datePublished" datetime="2019-04-28T11:16:02+08:00">2019-04-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-10 12:19:11" itemprop="dateModified" datetime="2021-01-10T12:19:11+08:00">2021-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm_and_Data_Structure</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/C/Play-Algorithm-and-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Play_Algorithm_and_Data_Structure</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="4章：堆和堆排序"><a href="#4章：堆和堆排序" class="headerlink" title="4章：堆和堆排序"></a>4章：堆和堆排序</h1><h2 id="1-堆和优先队列"><a href="#1-堆和优先队列" class="headerlink" title="1. 堆和优先队列"></a>1. 堆和优先队列</h2><ol>
+<li>优先队列（<strong>动态</strong>）：<ol>
+<li>操作系统任务调度（一次任务执行完，又来了新的任务或者旧任务的优先级发生了变化），如果使用一般排序，每次任务执行完都要重新排序一次；</li>
+<li>游戏中选择第一攻击对象，并存入新增加的敌人，也是动态变化的；</li>
+<li>在 N个元素中选出前 M 个，一般排序：$O(NlogN)$; 优先队列：$O(NlogM)$;</li>
+<li>不同数据结构实现的优先队列的时间复杂度比较：<br><img src="resources/5A77954373556D1946D82E9202A886B9.jpg" alt="IMAGE"></li>
+<li>普通数组入队在最后添加即可，但是出队时要筛选出优先级最高的，并且要移动数组元素（扫描数组找到优先级最高的需要$O(n)$）, 之后移动元素也是$O(n)$，这两个阶段是分开进行的，不嵌套，所以时间复杂度为$O(2*n)$，非$O(n^2)$</li>
+<li>顺序数组，在入队时要维持顺序性，出队时直接就能取到优先级最高的</li>
+<li>普通数组和顺序数组，最差情况：$O(n^2)$; 堆：$O(nlogn)$</li>
+<li>堆就是优先队列，只要封装了对应的enqueue()和 dequeue()即可。入队也是从队尾入，但是入队后自身还会根据堆的性质进行调整，出队时还是从队首出，出队后也会进行调整</li>
+</ol>
+</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="2-堆的实现（以最大堆为例）"><a href="#2-堆的实现（以最大堆为例）" class="headerlink" title="2. 堆的实现（以最大堆为例）"></a>2. 堆的实现（以最大堆为例）</h2><ol>
+<li><p>基本理论</p>
+<ol>
+<li>经典的堆实现是使用一棵“<strong>完全</strong>”二叉树；</li>
+<li>二叉树中父节点必须都大于其子节点，但是并不说明层级高的节点都比层级低的节点值大（比如两个节点在同一个根节点的两个不同分支上，比如下图中 3 号节点替换成 23，这样它还比左子树的 4 号节点小，虽然层级比较高）；</li>
+<li>二叉堆是一棵完全二叉树，即除了最后一层，其它层（除最后一层外）都必须满节点且最后一层叶子节点都集中在左侧； </li>
+<li>二叉堆的实现<ol>
+<li>经典的二叉堆实现是使用一个数组</li>
+<li>如果根节点存储在数组1 位置，那么标号为 k其左子节点序列号是 2k,右子节点是 2k+1;<ul>
+<li><img src="resources/6878F84F389D2973BB135352EA587534.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li>如果根节点存储在数组 0 位置，那么标号为 k 的左子节点是 2k+1,右子节点是 2k+2</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>二叉堆（最大堆）的实现</p>
+<ol>
+<li><p>MaxHeap类封装</p>
+<ul>
+<li><img src="resources/0DF63BFDB026FE9C7CD63B2AEBABD8E7.jpg" alt="IMAGE">  </li>
+</ul>
+</li>
+<li><p>Shift Up 上浮操作，这里加入 52 这个新节点，比起父节点大，所以不满足最大堆性质，需要上浮；</p>
+<ul>
+<li><img src="resources/75229F40F9F22DB5AF646BBB4F66D400.jpg" alt="IMAGE"> </li>
+<li><img src="resources/D820C8BC46F077DC983DD24A417C9043.jpg" alt="IMAGE"></li>
+<li><img src="resources/AD845A74AFAC09E8FB200D700B77FE52.jpg" alt="IMAGE"></li>
+<li>此时 52 已经比起父节点小了，就不需要上浮了</li>
+</ul>
+</li>
+<li><p>ShiftDown 下沉操作，这里删除根节点</p>
+<ul>
+<li>删除根节点 62<ul>
+<li><img src="resources/9B3BFE4E512A9996FDAE1DBCF810A626.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li>取出右下叶子节点替换删除节点<ul>
+<li><img src="resources/A391509E7DBBC1209E1DC31C3BE25112.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li>设置 count，因为 16 节点已经替换上去，不再是叶子节点了，所以要防止再次访问到<ul>
+<li><img src="resources/2AEB5F7343B39DA8631E4AC2D7FD6F8F.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li>将替换节点 16 与左右孩子中较大的进行交换<ul>
+<li><img src="resources/EC2FBB69CF578CE1CF8BEF0A51A013DC.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li>直到 16 比其左右子节点都大为止<ul>
+<li><img src="resources/15300D53443E9AE3985189D9BE5FA41B.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>insert(): 添加时要进行容量检查，看是否有空间还能容纳新元素，所以可以设置一个 capacity 变量；添加后要进行 Shift Up 操作–添加的元素总在数组最后一位，即 count 计数所在位置，从这里开始执行上浮操作；</p>
+<ul>
+<li><img src="resources/9E2C77898D96CE63B3AC187E4B28C9C1.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li><p>shiftUp();算法复杂度$O(logn)$</p>
+<ul>
+<li><img src="resources/05A0FCFD71B45961C7E5A08695452FB2.jpg" alt="IMAGE"> </li>
+</ul>
+</li>
+<li><p>删除元素</p>
+<ul>
+<li><img src="resources/56A172F210FE7D6B366B7078EEF8FA32.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li><p>ShiftDown;算法复杂度$O(logn)$</p>
+<ul>
+<li>首先判断这个替换节点（删除一个节点后从叶子上取出的那个节点）存在，即 2*k &lt;= count，这里只判断左孩子存在即可（对一个完全二叉树，如果有子节点，左孩子肯定存在），此时说明有下沉的可能；然后再判断右孩子是否存在，如果存在，那么判断左右孩子哪个比较大，取出大的与根节点比较，如果根节点小于它，那么进行交换；否则，说明根节点比左右孩子都大，不用下沉；</li>
+<li><img src="resources/07E32A0423EF06E09F36D46F142A4201.jpg" alt="IMAGE"></li>
+<li>潜在优化，可以先循环找到最终与谁进行交换，不用每次都交换；<h2 id="3-基础堆排序和-Heapify"><a href="#3-基础堆排序和-Heapify" class="headerlink" title="3. 基础堆排序和 Heapify"></a>3. 基础堆排序和 Heapify</h2></li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>堆排序</p>
+<ol>
+<li>复杂度 O(nlogn)</li>
+<li>依次从堆中取出，对于最大堆，每次取出的都是最大的，存入数组，就是有序的了；这里每次取出最大的，就相当于从堆中删除一个元素，按照上面提到的删除操作，要找到替换节点并 shiftDown操作（该操作参见上面内容）；<ul>
+<li><img src="resources/C22EA5B0A00663782BAC04A66ACCA5F8.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>Heapify</p>
+<ol>
+<li>原理(这里仍然从索引 1 开始存放节点，用数组存放完全二叉树)<ol>
+<li>叶子节点可以看做最大堆或者最小堆<ul>
+<li><img src="resources/083D9A6874720686873A30FF575DB8C1.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li>见上图，<strong>这个无序完全二叉树中第一个非叶子节点的序号是最后一个叶子节点 / 2</strong> （$10/2 = 5$）</li>
+<li>接下来以这个非叶子节点开始进行heapify,使其满足最大堆的性质（根节点比子节点大），即在该节点上执行 shiftDown 即可（heapify 中只需要 shiftDown，因为会逐层下沉直到树根节点为止） – 下面前两幅图说明了从最后一个非叶子节点开始 shiftDown,后三幅图说明了最后一个非叶子节点（树根节点）的下沉过程；<ul>
+<li><img src="resources/9E07B7464D24CE7FC1030198DB384770.jpg" alt="IMAGE"></li>
+<li><img src="resources/0DB1D3783DA0B93042FFD7C8D77B2BB0.jpg" alt="IMAGE"></li>
+<li><img src="resources/81F72E3D53BF8BDD1B728AD665202327.jpg" alt="IMAGE"></li>
+<li><img src="resources/E5AE4C53417CAC815712A929CD94D5C6.jpg" alt="IMAGE"></li>
+<li><img src="resources/68E7DB98FC0ABAE0C49BD22C9643AD30.jpg" alt="IMAGE"></li>
+<li><img src="resources/A8D980ABC00A472D778B2573CE267584.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>Heapify 实现<ul>
+<li>这里 MaxHeap 实际上就是 Heapify,传入一个数组，将数组元素存入 data 数组中（因为完全二叉树是用数组表示的，堆是一个完全二叉树），并且因为二叉树索引一般从 1 开始，所以偏移 1 位进行赋值（从 0 赋值也可以，只不过一个根节点k的子节点的索引就要偏移2k+1和 2k+2了）；之后从最后一个非叶子节点（count/2）开始进行下沉操作；这样就把一个无序的堆整合成了最大堆；</li>
+<li><img src="resources/1124BB710010514452CAE487C9766468.jpg" alt="IMAGE"></li>
+<li><strong>堆排序可以理解为：1. 首先将无序元素存入堆（数组表示的完全二叉树），2. 然后执行 heapify 将其整合成一个最大堆（也可以是最小堆），3. 之后再从堆中依次取出最大值，并存入一个数组，就得到了有序的数组（heapify 后得到的只是一个堆，但还不是一个有序数组，还要将堆顶元素一个一个取出，每次取出再 hepify，最后才能得到一个有序数组）；</strong></li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>堆排序效率不如归并排序和快速排序，所以一般不使用堆排序，<strong>堆更多的用于动态数据的维护</strong>；但是对堆进行 heapify 还是比将元素一个一个插入堆中效率要高；</p>
+<ul>
+<li><p>将 n 个元素逐个插入空堆中，算法复杂度是O(nlogn)</p>
+</li>
+<li><p>heapify 的过程，时间复杂度为$O(n)$</p>
+<ul>
+<li><p>关于 heapify 的时间复杂度为什么是$O(n)$，从代码上看似乎是$O(n+nlogn)=O(nlogn)$才对；实际上不是这样的，注意这里只有一半的节点（完全二叉树，非叶子节点只占总节点的一半），并且每个节点 shiftDown 的次数也不同，最大是 logn次，即执行 logn 次交换；<br><img src="resources/DCB75571E90335E15B14BBBE03D8337E.jpg" alt="IMAGE"></p>
+</li>
+<li><p>Now, take a look at the image, there are:</p>
+<blockquote>
+<p>n/2^1 green nodes with height 0 (here 23/2 = 12)<br>n/2^2 red nodes with height 1 (here 23/4 = 6)<br>n/2^3 blue node with height 2 (here 23/8 = 3)<br>n/2^4 purple nodes with height 3 (here 23/16 = 2)<br>so there are n/2^(h+1) nodes for height h</p>
+</blockquote>
+<p>To find the time complexity lets count the amount of work done or max no of iterations performed by each node. now it can be noticed that each node can perform(atmost) iterations == height of the node.</p>
+<blockquote>
+<p>green = n/2^1 * 0 (no iterations since no children)<br>red   = n/2^2 * 1 (<em>heapify</em> will perform atmost one swap for each red node)<br>blue  = n/2^3 * 2 (<em>heapify</em> will perform atmost two swaps for each blue node)<br>purple = n/4^3 * 3<br>so for any nodes with height h maximum work done is n/2^(h+1) * h</p>
+</blockquote>
+<p>Now total work done is:</p>
+<blockquote>
+<p>(n/2^1 * 0) + (n/2^2 * 1)+ (n/2^3 * 2) + (n/2^4 * 3) +…+ (n/2^(h+1) * h)<br>= n * ( 0 + 1/4 + 2/8 + 3/16 +…+ h/2^(h+1) ) </p>
+</blockquote>
+<p>now for any value of h, the sequence：</p>
+<blockquote>
+<p>( 0 + 1/4 + 2/8 + 3/16 +…+ h/2^(h+1) ) </p>
+</blockquote>
+<p>will never exceed 1,<br>Thus the time complexity will never exceed O(n) for building heap.</p>
+</li>
+</ul>
+</li>
+<li><p>这里堆排序为data数组分配了空间，可以对这个进行优化，在原数组就实现堆排序；</p>
+</li>
+</ul>
+</li>
+<li><p>原地堆排序（优化的堆排序）</p>
+<ol>
+<li>实际上一个数组就可以看成一个堆，只不过是无序的；</li>
+<li>通过 heapify 可以将这个数组转换成最大堆；</li>
+<li>对于得到的最大堆，每次数组中第一个元素肯定是堆顶元素，是最大值，将其与数组末尾元素交换，整个数组中的最大值就已经放到了数组末尾了（所以从小到大排序就用最大堆，从大到小排序就用最小堆）；<ol>
+<li><img src="resources/8FC35DF88B54EB5D4F9594C1550BA01C.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+<li>之后数组前 n-1个元素又变成了一个非最大堆，再次执行 heapify 操作转换成最大堆，之后再把数组第一个即堆顶元素取出与数组倒数第二个元素交换位置；<ol>
+<li><img src="resources/6CB02302DE6FD853F128BAB676A1B930.jpg" alt="IMAGE"></li>
+<li><img src="resources/C3520E921AFC9F91F829BF60CC84E251.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+<li>之后再对前 n-2个元素进行 heapify，最终得到的就是一个有序数组；<ol>
+<li><img src="resources/9B11C1655AAA7EAC058258160CDAC731.jpg" alt="IMAGE"> </li>
+</ol>
+</li>
+<li>总结：<ol>
+<li>与之前的普通堆排序相比，省去了为从堆中依次取出最大值存入的目的数组而开辟的空间；</li>
+<li>不管是普通堆排序还是优化了的原地堆排序，都要不断的执行 heapify 的过程；</li>
+<li>此时需要对数组索引 0 存入第一个堆节点进行操作（<u>当然，还可以将传入的数组 arr 往 data 数组中赋值时，跳过索引 0，从 1 开始存放，这样就能按照从索引 1 开始执行堆中的操作了</u>），与上面熟悉的从 1 开始有所不同，首先子孩子节点索引有变化；其次最后一个非叶子节点求取方法有变化，变化参加下图：<ul>
+<li><img src="resources/B21E1F33F1F5EEBFE229C6FA0ABE9D9F.jpg" alt="IMAGE"></li>
+<li><img src="resources/A7E961A64A01E572F1542C938FB77312.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>代码实现：<ol>
+<li>首先对从索引 0 开始的数组（无序堆）进行 heapify，然后交换堆顶和数组末尾元素；之后再次 heapify，再次取出堆顶元素和数组倒数第二个进行交换；这里实际上把 heapify 和元素交换放在了一起（参见上面 heapify 的过程,这里没复用上面的 heapify 函数是因为那个是从索引 1 开始操作的）；<ul>
+<li><img src="resources/B03ADD3A55686E07371682711F409A5D.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li>__shiftDown 操作(从数组索引 0 开始的堆）<ul>
+<li><img src="resources/22B0B7B8DFAA491B074940DE7237DAAB.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>各种排序算法比较：<br> <img src="resources/3E8E05B374736B07E1D223C93E254DBF.jpg" alt="IMAGE"></p>
+<ol>
+<li>空间复杂度：<ol>
+<li>插入排序在有序状态会变成成O(n)，只需要比较一次；快速排序在特殊情况下（有序状态时）会退化成 o(n^2);</li>
+<li>后三种排序存在常数上的差异，快速排序比较占优，所以快速排序速度比较快，而其出现极端情况退化成O(n^2)的可能性很小；一般系统级别的排序都是快速排序实现的；对于有大量重复键值的可以采用三路快速排序；</li>
+</ol>
+</li>
+<li>原地排序：<ol>
+<li>归并排序必须开辟额外空间完成归并过程，如果对于空间比较敏感，归并排序不适合；</li>
+</ol>
+</li>
+<li>额外空间：<ol>
+<li>插入排序和原地堆排序只需要开辟一个空间用于元素交换过程，所以额外空间是 O(1)级别；</li>
+<li><u>归并排序需要 O(n)的空间用于归并过程；归并是递归实现，有 logn 层，要开辟 logn 层栈空间，保存递归过程中的临时变量，所以空间需要的是：n+logn，而 n 远大于 logn，所以总体是O(n)</u>;</li>
+<li><u>快速排序采用递归方式排序，有 logn层，需要logn层的栈空间，保存每次递归过程中的临时变量，供递归返回时使用</u>；</li>
+</ol>
+</li>
+<li>是否稳定排序<ol>
+<li>稳定定义：<strong>相等元素</strong>的相对位置没有变化</li>
+<li>插入和归并排序是稳定的，快速排序和堆排序是不稳定的；</li>
+<li>插入排序的稳定性：拿未排序的 3 与前面每个元素比较，判断后面元素<strong>小于</strong>前面元素时才插入前面，保证了<strong>等于</strong>时不会插入；<ol>
+<li><img src="resources/5C389544259A2128A309C068011B7B50.jpg" alt="IMAGE"> </li>
+<li><img src="resources/3FB011CE4FCDC8A2526682ACC03E6B44.jpg" alt="IMAGE"></li>
+<li><img src="resources/8905656C962C923C3C60F67C6A94B8A9.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+<li>归并排序的稳定性：在归并时，判断只要前面元素<strong>小于等于</strong>后面元素，就始终把前面元素放入归并后的数组中，保证了相等元素前面的始终在前；当然如果上面写成<strong>小于</strong>，就变成不稳定的了；<ol>
+<li><img src="resources/7A9B5A8742A78BB5AA223542CFD4199F.jpg" alt="IMAGE"></li>
+<li><img src="resources/524A122C9163C7E62E339941FF98038C.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+<li>所以归并排序和插入排序都是稳定的，当归并到规模比较小时改用插入排序，不会影响稳定性；</li>
+<li>上面可知，快速排序和稳定排序的稳定性跟具体实现（那个元素大小判断）相关；</li>
+<li>快速排序和堆排序的不稳定性：<ol>
+<li>快速排序要选定标定点（pivot），这个选择就可能会使原来排在后面的元素排在了前面；</li>
+<li>堆排序在将整个数组组建成堆的过程也可能会破坏先后顺序；在每次取出最大元素，要用最后一个叶子节点替换，这时候也可能会破坏稳定性；</li>
+</ol>
+</li>
+<li>将快速排序修改成稳定排序：通过实现自定义比较函数来保证特定环境中的快速排序是稳定的，比如学生成绩，规定按照score排序，成绩相同则按照name排序（当然这里还可能会出现 name 也相同的情况，此时可能需要更进一步根据性别、身高等来进行排序，才能保证稳定性），<u>这实际上是通过这些限定条件将所有元素变成了不相等的元素了；如果这样限定后还是有相等的，那么快速排序还是不稳定，因为只要存在相等的，那么在piovt取到这种相等的元素时就可能会导致不稳定</u>。<ol>
+<li><img src="resources/DB6106E06D4D3BCA7901C9E610E5E5E6.jpg" alt="IMAGE"> </li>
+</ol>
+</li>
+<li><strong>系统级别对稳定性没有要求，使用快速排序；有要求，则使用归并排序；</strong></li>
+<li>是否存在下面这样的排序算法呢？<ul>
+<li><img src="resources/653E0004A7B8CE3DC661D7818BC84031.jpg" alt="IMAGE"> </li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="4-索引堆（Index-Heap）"><a href="#4-索引堆（Index-Heap）" class="headerlink" title="4. 索引堆（Index Heap）"></a>4. 索引堆（Index Heap）</h2><ol>
+<li><p>一般堆的局限<br> <img src="resources/61D07201B19C2074FF667E9B58990F26.jpg" alt="IMAGE"></p>
+<ol>
+<li>堆是用数组表示的完全二叉树，在 heapify 成堆的过程中，要交换两个位置的元素，如果元素比较大（例如：10 万字字符串） ，耗费巨大；</li>
+<li>堆组建好后，因为元素位置发生了变化，不方便索引到对应元素；比如，开始时数组索引是系统任务，对应的数组元素的值是任务优先级，当组建成堆后，对应索引就不再对应原来的优先级了；此时如果想把任务 6 的优先级提一下，就不太好操作；当然可以在存放的元素里保存其任务 id，但是每次也要遍历一下才能找到；</li>
+</ol>
+</li>
+<li><p>索引堆<br> <img src="resources/BB69558EDACFDA5BF526C2580857CD10.jpg" alt="IMAGE"><br> <img src="resources/FEB1EB04F287DCBAD0B0284435F24AD9.jpg" alt="IMAGE"></p>
+<ol>
+<li>由上面前后比较可知：data 未进行移动，发生改变的是 index;</li>
+<li>对于组建好的堆可以这样解读：堆顶元素10 是index 10（非图中标注的 index，而是实际的数组下标 10） 所对应的值，即 62；</li>
+<li>可以看到，实际的数组索引对应的元素值并没有改变；</li>
+<li>如果想获取堆顶元素值，就找到图中标示 index 的行的第一个即 10，然后根据这个到数组中找对应的值为 62；如果想提升一下索引为 7 的任务的优先级，就直接找到数组下标为 7 的元素值 28，改变这个值即可；</li>
+<li><u><strong>实际上索引堆就是把 index 数组当成了堆进行操作，操作的值是原数组的下标索引，而 data 只是一个仓库，存放元素真正的值，并通过数组下标获取，在shift 操作时进行大小比较时实际上不是 inedx 元素值的比较，而是通过 index 元素值找到原数组data 中对应的元素值进行比较，决定是否上浮或下沉的</strong></u>；在非索引堆中，则 data 才是要操作的堆；</li>
+</ol>
+</li>
+<li><p>索引最大堆实现：</p>
+<ol>
+<li><p>数据结构</p>
+<ul>
+<li><img src="resources/448AB46B5B1C623BAD44379676CF47E0.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li><p>insert</p>
+<ul>
+<li>具体实现跟上面原理有个差异，上面讲索引堆原理时数组索引是从 1 开始的，而实际上外部用户一般认为数组索引是从 0 开始，所以传入参数时，可能用户会传入索引 0 存放元素 item，所以 insert 函数在实现时要考虑这一点，要么改成从 0 开始索引，要么在申请空间时，多申请一个空间容量，insert内部操作时把 i 先加上 1，再存放元素（实际上还是从索引 1 开始存放元素的）；本处实现采用后者方案；</li>
+<li>用户认为传入的索引应该从 0 开始，存入时，先把 i+1，再进行元素存放和索引存放；下面的实现可以把 count 和 i 那样，先自身加 1 ，再存入值；数组操作要注意不能越界；此外，因为 index 数组才是要操作的堆，所以插入时插入到 count 位置（在索引从 1 开始，用户传入索引从 0 开始时，是插入到 count+1 位置），而 item 直接存入对应索引 i 的 data 数组中即可；<ul>
+<li><img src="resources/A6930DE8BD90BD867FC4ECE5A5893DBE.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+<li>shiftUp():这里在访问时要通过 index数组获取索引，进行交换时，实际上交换的是 index 数组值，但是比较大小是通过比较 data 数组中对应的值确定是否交换 index 数组索引的。<ul>
+<li><img src="resources/4B064AEF3FEBE119DD69AF3F5FDBDB49.jpg" alt="IMAGE"> </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>删除操作：extractMax, 把堆顶元素取出，堆取出最大元素要用最后一个叶子节点替换（类似于取出之后这个空间就不能再用了，所以把取出的值放入数组末尾，然后 count 减一，即再也不会访问到这个索引，那对应这个索引的 data 数组元素也就相当于不再访问了），然后对这个替换的新的根节点进行 shiftDown 操作；</p>
+<ul>
+<li><img src="resources/F9CC713AC2AACD4AD00BE40AF52AB9ED.jpg" alt="IMAGE"> </li>
+<li>shiftDown 操作，实际上都是在原来堆操作的基础上修改成对索引数组的操作；<ul>
+<li><img src="resources/8D7AEE969A61132EF1D8807DECC4C26F.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>获取最大堆堆顶索引：实际上用户可能更希望得到一个索引，通过这个索引就能到数组中获取对应元素；这里对于用户来说数组索引从 0 开始，而我们的代码实现是从索引 1 开始操作堆的，所以再返回索引值时要减一；</p>
+<ul>
+<li><img src="resources/726CD5BAA06618E041812581EEE334F6.jpg" alt="IMAGE"></li>
+<li>而如果用户想获取元素值，就可以这样来做：因为用户传入的索引是从 0 开始，所以获取实际上元素时要加 1；<ul>
+<li><img src="resources/BB247E8E7890C9C43AF010C1412A3123.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>更新堆中某个索引对应的值</p>
+<ul>
+<li>这里把用户传入的索引 i（从 0 开始）对应的元素值更新为 newItem,首先索引加 1，更新元素值，然后因为更新后的值可能不符合最大堆性质，需要整理，可以使用 heapify 对整个堆进行整理，但是没有必要，可以直接对这个元素执行整理，先尝试 shiftUp 在尝试 shiftDown（插入时插入堆尾，所以只需 shiftUp,取出最大元素时是删除堆首，再 用堆尾元素替换，所以只需要执行 shiftDown,更新则是在中间，所以两者都要执行–<u>实际上并不是两者都执行，而是两者只执行一个，但是由于不知道插入的值到底应该执行哪个，所以两个都写上，其中必有一个条件不满足而不用执行的。为什么呢？对于一个元素，如果需要上浮，那么与它交换的元素肯定比下面的节点大，所以不用再下沉；同理，如果一个元素需要下沉，与它交换的元素肯定比上面的都小，那也不用再上浮</u>），既然要进行这个操作，而索引堆的这种操作都是对 index 数组元素进行的，所以要根据用户这个 i 找到 index数组中对应的值j，然后在 shiftUp 和 shiftDown，根据 i 找 j 就可以通过遍历 index 数组来实现了；</li>
+<li><img src="resources/74B1BFAA83A689DDF652F85EEA3AFEA2.jpg" alt="IMAGE"></li>
+<li>这个函数的时间复杂度分析：for 循环是 o(n), 里面的上浮和下沉操作都是 O(logn)，整体上是 O(n+logn) = O(n); 外部用户如果要更新 n 个堆元素值，时间复杂度就是 O(n^2)；</li>
+</ul>
+</li>
+<li><p>更新堆中某个索引对应元素值的优化<br> <img src="resources/7E78253E9322336538755414DAA1A9E5.jpg" alt="IMAGE"></p>
+<ol>
+<li>假设这是一个任务调度系统，如果用户想更新任务 3 所对应的优先级的大小，直接给原数组索引 3+1=4（因为用户索引从 0 开始，堆索引从 1 开始）位置赋值即可，更新后，可能不符合堆的性质，要进行整理，整理时要找对 shiftUp 和 shiftDown 的元素是哪个，这里实际更新的索引是 4，通过遍历找到 4 在 index 中的位置为 9，所以要对堆中序号为 9 的那个元素进行 shiftUp 和 shiftDown 操作；</li>
+<li>通过 reverse 数组进行提速<br> <img src="resources/A4703881CE031B9A5FE2343EA72E838B.jpg" alt="IMAGE"><ol>
+<li>这里增加了一个 rev 数组，这个数组中存放的就是 index 数组中某个索引对应的真正的在 dtat 数组中的索引值（rev[i]表示索引 i 在index[堆]中的位置，举例：对于用户要更新的索引 3（在代码中为 3+1=4），更新 data[4]的值后，要对堆进行整理，整理时要通过查找 index 数组找到索引 4现在在原 data 数组的索引 9 处，此时才能决定对 9 处这个索引进行上浮和下沉操作；如果事先已经把 索引 4 对应原数组索引 9 这个存入 rev 数组了，那 O(1)时间内就可以取得，不用遍历 index 数组了；</li>
+<li>具有如下性质：<br> <img src="resources/3834406EF4E18CD779C1D8F6B35CA7D8.jpg" alt="IMAGE"></li>
+<li>insert 操作，增加了 reverse数组的维护；<br> <img src="resources/8C79FC53BECEC7AF71B3DD8D21CF3D4A.jpg" alt="IMAGE"></li>
+<li>shiftUp<br> <img src="resources/6693E88165451F3AFCDD1950BE3A9F76.jpg" alt="IMAGE"></li>
+<li>extractMax 操作，swap 操作后，实际上是把堆顶元素放到数组最后，然后对 count 减一，就是把它从堆中去除；维护 reverse 数组时，index[count]处置 0 即可；<br> <img src="resources/3BEF3A8DC3C5710F9EBC31AD6C6088B2.jpg" alt="IMAGE"></li>
+<li>extractMaxIndex<br> <img src="resources/C2CEC7F7D13382946F529C2C2EE99046.jpg" alt="IMAGE"></li>
+<li>shiftDown<br> <img src="resources/1308D422A478FDC9BEC418406948E57B.jpg" alt="IMAGE"></li>
+<li>change，此时就不需要遍历 index 数组找 j 了，直接从 reverse 数组中获取即可；<br> <img src="resources/A3A2EC5FA7E43A4934348B08D8A403C8.jpg" alt="IMAGE"></li>
+<li>这里还会存在一个问题，用户传入的 i 有可能不在堆中，可以通过 reverse 数组判断 i 是否在堆中；因为在初始化和删除元素时，reverse 数组中对应元素都置为 0 了；<br> <img src="resources/36527F2B443B6EE08933B15A31ADA8C3.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="5-堆后续"><a href="#5-堆后续" class="headerlink" title="5. 堆后续"></a>5. 堆后续</h2><ol>
+<li>可以使用堆实现优先队列，比如游戏中决定优先攻击哪个敌人；</li>
+<li>多路归并排序，这里要比较四个元素的大小关系，可以将这四个元素推入最小堆中，每次从堆中推出一个，然后从这个元素所属的数组中再推一个进入最小堆中；同理可以进行 d 路归并，这个 d越大，归并时层数越小，但是同一级需要比较的元素就比较多，这个效率具体哪个 d 值比较好，需要权衡；极端情况，如果数组有 n 个元素，做 n 路归并排序，每个子数组只有一个，那么归并排序就退化成了堆排序；<br> <img src="resources/55F0D9BD7DC364C2BA04797AF1E79DBF.jpg" alt="IMAGE"></li>
+<li>d叉堆，同样层数少，但是每一层 shiftUp、shiftDown 时，需要比较的元素也多；<br> <img src="resources/CABCAFFF5246A712C37A564049E629D9.jpg" alt="IMAGE"></li>
+<li>最大最小队列，既能获取最大元素也能获取最小元素，可以在数据结构中既包含最大堆也包含最小堆来实现；</li>
+<li>一些细节优化和尝试，可以从下面三个角度进行<br> <img src="resources/717696DEECF21CB5421B84E706285126.jpg" alt="IMAGE"></li>
+<li>二项堆、斐波那契堆</li>
+<li>不管是堆还是归并、快速排序中的递归操作，实际上最终都可以归纳成树的概念；</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+              <a href="/tags/Sorting/" rel="tag"># Sorting</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Data-Structure/" rel="tag"># Data Structure</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/" rel="prev" title="6 章：并查集（Union Find）-- 特殊的树形结构">
+                  <i class="fa fa-chevron-left"></i> 6 章：并查集（Union Find）-- 特殊的树形结构
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/01/09/Misc/mermaid%20plugin%20test/" rel="next" title="mermaid plugin test">
+                  mermaid plugin test <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Theo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.4/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+
+
+<script>
+NexT.utils.loadComments('.utterances-container', () => {
+  const script = document.createElement('script');
+  script.src = 'https://utteranc.es/client.js';
+  script.setAttribute('repo', "changyukang/changyukang.github.io");
+  script.setAttribute('issue-term', "title");
+  script.setAttribute('theme', "github-light");
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  document.querySelector('.utterances-container').appendChild(script);
+});
+</script>
+
+</body>
+</html>

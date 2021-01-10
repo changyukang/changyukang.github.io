@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="sorting algorithm about counting sort and radix sort">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计数排序和基数排序 Counting Sort and Radix Sort (Distribution Sort)">
+<meta property="og:url" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/index.html">
+<meta property="og:site_name" content="Kiwi-Theo">
+<meta property="og:description" content="sorting algorithm about counting sort and radix sort">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/397A652C132B9839EDF8288B040E84E4.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/5FE97F532BF8FFA134365EDA5D535F16.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/4A88DD7EF4737DFD6AD95E0C4D660B41.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/80FDF16C335C3600DCCA6E0D8A063F69.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/B5D1093A74E3EB5B69300495A9CDE8B5.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/8EE2A6ADB835AB37E3D0E0D29002FFEA.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/861A44E181015F24D3E6477DCF2CC190.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/0442F4576774D3E645AB9930454EE97C.jpg">
+<meta property="article:published_time" content="2016-03-14T14:10:17.000Z">
+<meta property="article:modified_time" content="2021-01-10T04:19:11.783Z">
+<meta property="article:author" content="Theo">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Sorting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/resources/397A652C132B9839EDF8288B040E84E4.jpg">
+
+
+<link rel="canonical" href="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>计数排序和基数排序 Counting Sort and Radix Sort (Distribution Sort) | Kiwi-Theo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Kiwi-Theo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Counting-Sort-and-Radix-Sort-Distribution-Sort"><span class="nav-number">1.</span> <span class="nav-text">Counting Sort and Radix Sort(Distribution Sort)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Counting-Sort"><span class="nav-number">1.1.</span> <span class="nav-text">1. Counting Sort</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Radix-Sort"><span class="nav-number">1.2.</span> <span class="nav-text">2. Radix Sort</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Theo"
+      src="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+  <p class="site-author-name" itemprop="name">Theo</p>
+  <div class="site-description" itemprop="description">Never late to study</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/changyukang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;changyukang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiwichangyu.kang@gmail.com" title="E-Mail → mailto:kiwichangyu.kang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2016/03/14/Programming/Algorithm_and_Data_Structure/Sorting/%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%20Counting%20Sort%20and%20Radix%20Sort%20(Distribution%20Sort)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+      <meta itemprop="name" content="Theo">
+      <meta itemprop="description" content="Never late to study">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi-Theo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计数排序和基数排序 Counting Sort and Radix Sort (Distribution Sort)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-03-14 22:10:17" itemprop="dateCreated datePublished" datetime="2016-03-14T22:10:17+08:00">2016-03-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-10 12:19:11" itemprop="dateModified" datetime="2021-01-10T12:19:11+08:00">2021-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm_and_Data_Structure</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/Sorting/" itemprop="url" rel="index"><span itemprop="name">Sorting</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">sorting algorithm about counting sort and radix sort</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Counting-Sort-and-Radix-Sort-Distribution-Sort"><a href="#Counting-Sort-and-Radix-Sort-Distribution-Sort" class="headerlink" title="Counting Sort and Radix Sort(Distribution Sort)"></a>Counting Sort and Radix Sort(Distribution Sort)</h1><h2 id="1-Counting-Sort"><a href="#1-Counting-Sort" class="headerlink" title="1. Counting Sort"></a>1. Counting Sort</h2><p>我们先假设待排序序列各元素均在区间[0, k]上，即对于 Counting Sort，必须事先知道数的分布范围。</p>
+<p>计数排序的思想是：在待排序序列中，如果我们能统计出有多少元素小于或等于某一个元素，我们也就知道了该元素的正确位置。例如，对于待排序序列{2,5,3,0,2,3,0,3}，我们统计出有8个元素小于等于5（包括5自己），那么5这个元素就应该被排序到第8位。</p>
+<p>下面给出算法的伪代码描述：<br><img src="resources/397A652C132B9839EDF8288B040E84E4.jpg" alt="IMAGE"></p>
+<p>其中数组A[1<del>n]是待排序数组；数组B[1</del>n]用来存放已排好序的元素。C[0~k]用来存放上面所说的统计数（具体的说C[i]就表示在数组A中，小于或等于i的元素的总个数(这里的 C 指的是在下面例图(b)中累加后得到的 C)）。</p>
+<p>下面这幅图描述的是对序列{2,5,3,0,2,3,0,3}排序的过程：<br><img src="resources/5FE97F532BF8FFA134365EDA5D535F16.jpg" alt="IMAGE"><br><span style=" color:#e07766">注意这里 A/B 数组都是从索引 1 开始，C 数组从索引 0 开始，如果 A/B 也是从索引 0 开始，那么在下图步骤 8-10，往 B 中存放时索引要减 1 即：B[C[A[j]]-1] = A[j]。</span></p>
+<p>在伪代码中，第2<del>3行时间代价θ(k)；第4</del>5行时间为θ(n)；第7<del>8行时间为θ(k)，第10</del>12行时间为θ(n)。因此，总的运行时间是θ(k+n)。当k= O(n)时，运行时间为θ(n)。<br><img src="resources/4A88DD7EF4737DFD6AD95E0C4D660B41.jpg" alt="IMAGE"></p>
+<p>可以看出，计数排序的下界优于我们上面论证的比较排序算法的下界时间Ω(nlgn)。这是因为计数排序并不是比较排序算法。事实上，在代码中从未出现比较某两个元素大小的代码。相反，计数排序是使用输入元素的实际值来确定其在数组中的位置。此时，比较排序算法的模型对计数排序不再适用。</p>
+<p>代码实现:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>[] array = &#123; <span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">3</span> &#125;;</span><br><span class="line">	printArray(countingSort(array, <span class="number">5</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[] countingSort(<span class="keyword">int</span>[] array, <span class="keyword">int</span> max) &#123;</span><br><span class="line">	<span class="keyword">int</span>[] result = <span class="keyword">new</span> <span class="keyword">int</span>[array.length];</span><br><span class="line">	<span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[max + <span class="number">1</span>];</span><br><span class="line">	<span class="comment">// 以下循环操作完成后，temp的第i个位置保存着array中，值为i的元素的总个数</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i : array) &#123;</span><br><span class="line">		temp[i]++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 以下循环操作完成后，temp的第i个位置保存着array中，值小于或等于i的元素的总个数</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; temp.length; i++) &#123;</span><br><span class="line">		temp[i] += temp[i - <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = array.length - <span class="number">1</span>; i &gt; -<span class="number">1</span>; i--) &#123;</span><br><span class="line">		result[temp[array[i]] - <span class="number">1</span>] = array[i];</span><br><span class="line">		temp[array[i]]--;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 打印数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printArray</span><span class="params">(<span class="keyword">int</span>[] array)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i : array) &#123;</span><br><span class="line">		System.out.print(i + <span class="string">&quot; &quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	System.out.println();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Why don’t we always use counting sort?<br><img src="resources/80FDF16C335C3600DCCA6E0D8A063F69.jpg" alt="IMAGE"></p>
+<h2 id="2-Radix-Sort"><a href="#2-Radix-Sort" class="headerlink" title="2. Radix Sort"></a>2. Radix Sort</h2><p><img src="resources/B5D1093A74E3EB5B69300495A9CDE8B5.jpg" alt="IMAGE"><br>从低位往高位进行逐次排序，每次对未经过排序的最低位1-digit 进行排序，当排序高位数字时对低位已排序的结果可能会有变动，这是合理的，高位大自然应该往后放（反之，从高位往低位排就不可以）。对于十进制数，每次只需要申请 10 个空间即可存放这些数字，因为1-digit十进制数不会超过 10。</p>
+<p>注意，这里在对某位进行排序时采用的是 StableSort(基数排序需要一种稳定的排序算法作为子程序，在这里使用计数排序)，所以假设两个数相等，高位排序结果并不会影响低位排序的结果；<br><img src="resources/8EE2A6ADB835AB37E3D0E0D29002FFEA.jpg" alt="IMAGE"></p>
+<p>对这 1-digit 进行排序使用什么呢？对十进制来说，k大小是 1-10。<br><img src="resources/861A44E181015F24D3E6477DCF2CC190.jpg" alt="IMAGE"></p>
+<p>But the number bits in a computer world is very large, so how to sort 1 million 64-digit numbers?</p>
+<ul>
+<li>Treat as four-digit radix 216 numbers</li>
+<li>Can sort in just four passes with radix sort!</li>
+</ul>
+<p><img src="resources/0442F4576774D3E645AB9930454EE97C.jpg" alt="IMAGE"></p>
+<p>Radix Sort 需要先对每个数最低位进行比较，之后在得到的结果基础上再对次低位进行排序，为了得到这一个个的位，使用 $10^{exp}$，其中 exp 从 1 到 n；这种方式需要依次对 10、100、1000…取余，另外一种思路是通过对 0000…0001, 0000…0010， 0000…0100等进行按位与(&amp;)操作,得到本次需要比较的 1-digit number.</p>
+<p>Radix Sort 示例：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">基数排序</span><br><span class="line">原始数据</span><br><span class="line"></span><br><span class="line">34<span class="number"> 54 </span><span class="number"> 12 </span><span class="number"> 78 </span>3 <span class="number"> 45 </span><span class="number"> 9 </span> </span><br><span class="line"></span><br><span class="line">exp = 1; compare the lowest digit number;</span><br><span class="line"></span><br><span class="line">0 <span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span> [34] <span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span> 0</span><br><span class="line"></span><br><span class="line">0 <span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span> [34 54] <span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span> 0</span><br><span class="line"></span><br><span class="line">0 <span class="number"> 0 </span> [12] <span class="number"> 0 </span> [34 54] <span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span> 0</span><br><span class="line"></span><br><span class="line">0 <span class="number"> 0 </span> [12] <span class="number"> 0 </span> [34 54] <span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span> [78]  0</span><br><span class="line"></span><br><span class="line">0 <span class="number"> 0 </span> [12]  [3]  [34 54] <span class="number"> 0 </span><span class="number"> 0 </span><span class="number"> 0 </span> [78]  0</span><br><span class="line"></span><br><span class="line">0 <span class="number"> 0 </span> [12]  [3]  [34 54]  [45] <span class="number"> 0 </span><span class="number"> 0 </span> [78]  0</span><br><span class="line"></span><br><span class="line">0 <span class="number"> 0 </span> [12]  [3]  [34 54]  [45] <span class="number"> 0 </span><span class="number"> 0 </span> [78]  [9]</span><br><span class="line"></span><br><span class="line">-&gt;<span class="number"> 12 </span>3<span class="number"> 34 </span>54<span class="number"> 45 </span>78 9</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">exp = 10; compare the second lowest digit number;</span><br><span class="line"></span><br><span class="line">0 [12]<span class="number"> 0 </span>0<span class="number"> 0 </span>0<span class="number"> 0 </span>0<span class="number"> 0 </span>0 </span><br><span class="line"></span><br><span class="line">[3] [12]<span class="number"> 0 </span>0<span class="number"> 0 </span>0<span class="number"> 0 </span>0<span class="number"> 0 </span>0 </span><br><span class="line"></span><br><span class="line">[3] [12]<span class="number"> 0 </span>[34]<span class="number"> 0 </span>0<span class="number"> 0 </span>0<span class="number"> 0 </span>0 </span><br><span class="line"></span><br><span class="line">[3] [12]<span class="number"> 0 </span>[34]<span class="number"> 0 </span>[54]<span class="number"> 0 </span>0<span class="number"> 0 </span>0 </span><br><span class="line"></span><br><span class="line">[3] [12]<span class="number"> 0 </span>[34] [45] [54]<span class="number"> 0 </span>0<span class="number"> 0 </span>0 </span><br><span class="line"></span><br><span class="line">[3] [12]<span class="number"> 0 </span>[34] [45] [54]<span class="number"> 0 </span> [78]<span class="number"> 0 </span>0</span><br><span class="line"></span><br><span class="line">[3, 9] [12]<span class="number"> 0 </span>[34] [45] [54]<span class="number"> 0 </span> [78]<span class="number"> 0 </span>0</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+              <a href="/tags/Sorting/" rel="tag"># Sorting</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/03/13/Programming/Algorithm_and_Data_Structure/Sorting/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F(Selection%20Sort)/" rel="prev" title="选择排序(Selection Sort)">
+                  <i class="fa fa-chevron-left"></i> 选择排序(Selection Sort)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/06/11/Programming/Algorithm_and_Data_Structure/Sorting/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%EF%BC%88Insertion%20Sort%EF%BC%89%E5%92%8C%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%EF%BC%88Shell%20Sort%EF%BC%89/" rel="next" title="插入排序（Insertion Sort）和希尔排序（Shell Sort）">
+                  插入排序（Insertion Sort）和希尔排序（Shell Sort） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Theo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.4/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+
+
+<script>
+NexT.utils.loadComments('.utterances-container', () => {
+  const script = document.createElement('script');
+  script.src = 'https://utteranc.es/client.js';
+  script.setAttribute('repo', "changyukang/changyukang.github.io");
+  script.setAttribute('issue-term', "title");
+  script.setAttribute('theme', "github-light");
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  document.querySelector('.utterances-container').appendChild(script);
+});
+</script>
+
+</body>
+</html>

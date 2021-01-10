@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="6 章：并查集（Union Find）– 特殊的树形结构1. 应用1. 处理连接问题 网络中节点间的连接状态 用户网络两人是否相识 交通网络两点是否连通   数学中的结合类实现 并查集中的并类似于集合中的并集 可以用并查集（集合中的点存在联系，id 一致或者状态相同）解决需要用数学集合的思路来解决的问题，并查询节点在集合中的状态    2. 连接问题与路径问题的比较 看一个节点是否有一个路径能到达">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6 章：并查集（Union Find）-- 特殊的树形结构">
+<meta property="og:url" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="Kiwi-Theo">
+<meta property="og:description" content="6 章：并查集（Union Find）– 特殊的树形结构1. 应用1. 处理连接问题 网络中节点间的连接状态 用户网络两人是否相识 交通网络两点是否连通   数学中的结合类实现 并查集中的并类似于集合中的并集 可以用并查集（集合中的点存在联系，id 一致或者状态相同）解决需要用数学集合的思路来解决的问题，并查询节点在集合中的状态    2. 连接问题与路径问题的比较 看一个节点是否有一个路径能到达">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/5B172199A9EC24063581C531309CBB0A.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/533D382017F33B15790A128360353604.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/3C403A1503E9DE5F10C521F4BEB27262.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/01A148CCD2D74235D946DEE555826EA3.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/6BEF2170D2BB86EE5B47AAC11F730F00.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/A0D0345720EED9CF0F291D306F7C4E0A.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/E5CCBCDD1EE522546A19EDB94D7DE1A8.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/67AA9C978F7E73F8C8F41D814738C236.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/7C9FE7468ED21195A1E240DA7561609F.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/61B003A561FD450CB59379900AC98460.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/A7D64155A6256A57408BF457ECE12901.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/B699DF3F3E30DB6808004518E1A56AB9.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/634CEF5D719AA41B3A906D71F09A039F.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/9E5B193B7882DE647E05B64EF269892C.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/275CF7B57C308B94469AEBDE98435D53.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/29E5A111C8C87EBA8B7D2C214F43FD35.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/A2E28C1A2B4C8B954844C70DCB680ED8.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/15509FF29EECB1E1B9627A60469591F4.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/7825EBF55B855B5C922E24B963930EA3.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/B4CF243006D883B9B09D4E3C1ED5E274.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/7ACE78875A89C1FB8677E88B1C395F20.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/C7E3A08701914CED15203574B2646BA9.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/FB840036B9C36C9A6478B730D596AE4F.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/73263B1BA4BAB43FC9342A2899852F3A.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/B61C604DC1485E0AB1CA621F930091CF.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/1F02CF0039DF061E9EC54246ED8E12E4.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/D19CF5AA248D0D48F2F5543BDB45BF06.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/6AA00327741C4AD1862D9C90896E7532.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/7CA8806B0E88D7F6582143397EBDEBED.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/1AC485EE03AA370480AD991A5B4493F1.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/6BA59CADD2B27B2EF16C223DE31986A5.jpg">
+<meta property="og:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/6751A4090CD739241A416AB3418D51F1.jpg">
+<meta property="article:published_time" content="2019-04-22T06:19:23.000Z">
+<meta property="article:modified_time" content="2021-01-10T04:19:11.543Z">
+<meta property="article:author" content="Theo">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Data Structure">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/resources/5B172199A9EC24063581C531309CBB0A.jpg">
+
+
+<link rel="canonical" href="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>6 章：并查集（Union Find）-- 特殊的树形结构 | Kiwi-Theo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Kiwi-Theo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union-Find%EF%BC%89%E2%80%93-%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">6 章：并查集（Union Find）– 特殊的树形结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%BA%94%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">1. 应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%A4%84%E7%90%86%E8%BF%9E%E6%8E%A5%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 处理连接问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BF%9E%E6%8E%A5%E9%97%AE%E9%A2%98%E4%B8%8E%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 连接问题与路径问题的比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Quick-Find"><span class="nav-number">1.2.</span> <span class="nav-text">2. Quick Find</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%B9%B6%E6%9F%A5%E9%9B%86%E6%94%AF%E6%8C%81%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 并查集支持的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%8F%AF%E4%BB%A5%E5%9B%9E%E7%AD%94%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 并查集可以回答的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Quick-Find%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. Quick Find实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Quick-Union-%EF%BC%88%E5%B8%B8%E7%94%A8%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">3. Quick Union （常用实现方法）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9%E2%80%93%E5%8F%A6%E4%B8%80%E7%A7%8D%E4%BC%98%E5%8C%96%E6%96%B9%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">4. 路径压缩–另一种优化方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%B9%B6%E6%9F%A5%E9%9B%86%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-number">1.5.</span> <span class="nav-text">5. 并查集的时间复杂度</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Theo"
+      src="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+  <p class="site-author-name" itemprop="name">Theo</p>
+  <div class="site-description" itemprop="description">Never late to study</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/changyukang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;changyukang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiwichangyu.kang@gmail.com" title="E-Mail → mailto:kiwichangyu.kang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2019/04/22/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/6%20%E7%AB%A0%EF%BC%9A%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union%20Find%EF%BC%89%E2%80%94%20%E7%89%B9%E6%AE%8A%E7%9A%84%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+      <meta itemprop="name" content="Theo">
+      <meta itemprop="description" content="Never late to study">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi-Theo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          6 章：并查集（Union Find）-- 特殊的树形结构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-22 14:19:23" itemprop="dateCreated datePublished" datetime="2019-04-22T14:19:23+08:00">2019-04-22</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-10 12:19:11" itemprop="dateModified" datetime="2021-01-10T12:19:11+08:00">2021-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm_and_Data_Structure</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/C/Play-Algorithm-and-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Play_Algorithm_and_Data_Structure</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="6-章：并查集（Union-Find）–-特殊的树形结构"><a href="#6-章：并查集（Union-Find）–-特殊的树形结构" class="headerlink" title="6 章：并查集（Union Find）– 特殊的树形结构"></a><span style=" color:#e07766">6 章：并查集（Union Find）– 特殊的树形结构</span></h1><h2 id="1-应用"><a href="#1-应用" class="headerlink" title="1. 应用"></a><span style=" color:#e07766">1. 应用</span></h2><h3 id="1-处理连接问题"><a href="#1-处理连接问题" class="headerlink" title="1. 处理连接问题"></a><span style=" color:#e09966">1. 处理连接问题</span></h3><ol>
+<li>网络中节点间的连接状态<ol>
+<li>用户网络两人是否相识</li>
+<li>交通网络两点是否连通</li>
+</ol>
+</li>
+<li>数学中的结合类实现<ul>
+<li>并查集中的并类似于集合中的并集</li>
+<li>可以用并查集（集合中的点存在联系，id 一致或者状态相同）解决需要用数学集合的思路来解决的问题，并查询节点在集合中的状态</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-连接问题与路径问题的比较"><a href="#2-连接问题与路径问题的比较" class="headerlink" title="2. 连接问题与路径问题的比较"></a><span style=" color:#e09966">2. 连接问题与路径问题的比较</span></h3><ol>
+<li>看一个节点是否有一个路径能到达另一节点</li>
+<li>连接问题比路径问题少，只关注是否连接，不需求具体路径</li>
+<li>因此，连接问题更方便用并查集实现，因为并查集只关心节点是否连接，类似堆只关心最大或者最小元素，二分查找只关心要找的那个元素（不需要全部遍历一遍）</li>
+</ol>
+<h2 id="2-Quick-Find"><a href="#2-Quick-Find" class="headerlink" title="2. Quick Find"></a><span style=" color:#e07766">2. Quick Find</span></h2><h3 id="1-并查集支持的操作"><a href="#1-并查集支持的操作" class="headerlink" title="1. 并查集支持的操作"></a><span style=" color:#e09966">1. 并查集支持的操作</span></h3><ol>
+<li>union(p,q)</li>
+<li>find(p)</li>
+</ol>
+<h3 id="2-并查集可以回答的问题"><a href="#2-并查集可以回答的问题" class="headerlink" title="2. 并查集可以回答的问题"></a><span style=" color:#e09966">2. 并查集可以回答的问题</span></h3><ul>
+<li>isConnected(p,q)</li>
+</ul>
+<h3 id="3-Quick-Find实现"><a href="#3-Quick-Find实现" class="headerlink" title="3. Quick Find实现"></a><span style=" color:#e09966">3. Quick Find实现</span></h3><a id="more"></a>
+
+<ol>
+<li><p>原理</p>
+<ol>
+<li>使用数组来表示并查集，并使用数组中存储的值来表示状态，例如下面，值为 1 的节点或者值为 0 的节点都是相连通的<br><img src="resources/5B172199A9EC24063581C531309CBB0A.jpg" alt="IMAGE"></li>
+<li>这种实现因为可以通过数组索引在 O(1)时间内获取连接状态，所以称为 Quick Find</li>
+</ol>
+</li>
+<li><p>实现</p>
+<ol>
+<li>数据结构<br><img src="resources/533D382017F33B15790A128360353604.jpg" alt="IMAGE"></li>
+<li>Find（） 和 isConnected（）<br>这种实现获取节点状态和判断连通性都很快<br><img src="resources/3C403A1503E9DE5F10C521F4BEB27262.jpg" alt="IMAGE"></li>
+<li>Quick Find 下的 Uniof()</li>
+</ol>
+<ul>
+<li><img src="resources/01A148CCD2D74235D946DEE555826EA3.jpg" alt="IMAGE"></li>
+<li>如上图，首先0, 2，4，6，8 是连接的，1，3，5，7，9 是连接的，如果想把 1 和 2 连接，实际上最终这所有的元素都连接在了一起，不能只修改 1 或者 2 本身的状态，不然他们与原来相连的节点就断开连接了，所以 union 操作实际上要修改 O(n)级别的节点状态，算法复杂度为O(n)</li>
+<li><img src="resources/6BEF2170D2BB86EE5B47AAC11F730F00.jpg" alt="IMAGE"></li>
+</ul>
+</li>
+</ol>
+<h2 id="3-Quick-Union-（常用实现方法）"><a href="#3-Quick-Union-（常用实现方法）" class="headerlink" title="3. Quick Union （常用实现方法）"></a><span style=" color:#e07766">3. Quick Union （<em>常用实现方法</em>）</span></h2><ol>
+<li><p>原理</p>
+<ol>
+<li>每一个元素看做一个节点，每个节点拥有一个指向父亲的指针</li>
+<li>子节点指向父节点，最终指向根节点，根节点则指向自己<br><img src="resources/A0D0345720EED9CF0F291D306F7C4E0A.jpg" alt="IMAGE"></li>
+<li>如果1 节点要与3 连通，1 节点要指向根节点2，而非指向 3；如果另一个并查集（5,6,7）要与并查集连接，只需将这个并查集的根节点指向另一个并查集的根节点即可，即 5 指向 2；如果节点 7 要与 3 连接，也是将 5 指向 2；</li>
+<li>Quick Union 依然可以用数组表示，存储的内容是父节点的 id<br><img src="resources/E5CCBCDD1EE522546A19EDB94D7DE1A8.jpg" alt="IMAGE"></li>
+<li>Quick Union union 过程<ol>
+<li>初始状态，每个节点是一个并查集，父节点都指向自己<br><img src="resources/67AA9C978F7E73F8C8F41D814738C236.jpg" alt="IMAGE"></li>
+<li>Uniof(4,3)<br><img src="resources/7C9FE7468ED21195A1E240DA7561609F.jpg" alt="IMAGE"></li>
+<li>Union(3,8),因为4 的父节点还是 3，没有变，所以索引 4 存储的还是 3<br><img src="resources/61B003A561FD450CB59379900AC98460.jpg" alt="IMAGE"></li>
+<li>Union(9,4),此时不是把 9 指向 4，而是把 9 指向 4 所指向的根节点，即 8，然后索引 9 的父节点更新为 8；为什么确定 8 就是根节点了？因为索引 8 存储的父节点是 8，说明自身指向自身，所以是根节点；9连接到 4 也是连通的，不过会导致树高度增加，不方便将来查找 Find;<br><img src="resources/A7D64155A6256A57408BF457ECE12901.jpg" alt="IMAGE"></li>
+<li>Union(6,2),把 6 节点的根节点指向 2 节点的根节点；<br><img src="resources/B699DF3F3E30DB6808004518E1A56AB9.jpg" alt="IMAGE"><br><img src="resources/634CEF5D719AA41B3A906D71F09A039F.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+<li>由上面过程可见，查找两个节点是否连接，只需要从两个节点开始找到根节点，如果根节点一样，说明节点是连接的；合并操作则是找到各自两个节点的根节点，直接连接在一起即可；这都是对树的某两个分支进行的，效率取决于树的高度，但基本上树的高度要远小于节点个数，所以效率会高些；</li>
+</ol>
+</li>
+<li><p>实现</p>
+<ol>
+<li>UnionFind类定义<br><img src="resources/9E5B193B7882DE647E05B64EF269892C.jpg" alt="IMAGE"></li>
+<li>Find（） 和 isConnected（）<br><img src="resources/275CF7B57C308B94469AEBDE98435D53.jpg" alt="IMAGE"></li>
+<li>Union（）找到根节点，进行连接<br><img src="resources/29E5A111C8C87EBA8B7D2C214F43FD35.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+<li><p>Quick Union 基于 size 的优化</p>
+<ol>
+<li>案例引入：union(9,4) 和 union(4,9)<br><img src="resources/A2E28C1A2B4C8B954844C70DCB680ED8.jpg" alt="IMAGE"><br><img src="resources/15509FF29EECB1E1B9627A60469591F4.jpg" alt="IMAGE"><br>上节实现的 union 始终是第一个节点连接到第二个节点上，这样导致 union(4,9)产生的数高度比较高，如果是千万节点，影响巨大；</li>
+<li>基于 size 的优化<ol>
+<li>类中增加 size 数组<br><img src="resources/7825EBF55B855B5C922E24B963930EA3.jpg" alt="IMAGE"> </li>
+<li>将 size 小的连接到 size 大的树上去<br><img src="resources/B4CF243006D883B9B09D4E3C1ED5E274.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p><strong>基于 rank 的优化</strong></p>
+<ol>
+<li>案例引入：union(4,2)<br><img src="resources/7ACE78875A89C1FB8677E88B1C395F20.jpg" alt="IMAGE"></li>
+<li>按照上面基于 size 优化过的 union 函数，要将 8 指向 7，但是 以 8 为根的树中节点数要少于以 7 为根的树，这样进行 union 操作后得到的树层数较多<br><img src="resources/C7E3A08701914CED15203574B2646BA9.jpg" alt="IMAGE"></li>
+<li>如果将 7 指向 8 呢？得到的层数会比较少<br><img src="resources/FB840036B9C36C9A6478B730D596AE4F.jpg" alt="IMAGE"></li>
+<li>明显，3 中的 union 是更好的一个方式，能得到层数更少的树，查找更快</li>
+<li>基于 rank 优化实现<ol>
+<li>数据结构，将 size 数组替换成 rank数组，每个 rank 都初始化为 1，因为初始状态每个只有 1 层；<br><img src="resources/73263B1BA4BAB43FC9342A2899852F3A.jpg" alt="IMAGE"></li>
+<li>此时，在两个树高度不同时，只需要把 rank 小的指向 rank 大的即可，不需要维护 rank，因为 rank 下的指向 rank 大的并不会导致树的高度发生变化；rank 的维护是在两者 rank 相等的时候进行的，此时随便哪个指向哪个都可以，只不过要维护合并后树根的 rank,树的高度加 1；<br><img src="resources/B61C604DC1485E0AB1CA621F930091CF.jpg" alt="IMAGE"></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="4-路径压缩–另一种优化方式"><a href="#4-路径压缩–另一种优化方式" class="headerlink" title="4. 路径压缩–另一种优化方式"></a><span style=" color:#e07766">4. 路径压缩–另一种优化方式</span></h2><p>上面的基于 size 和 rank 的优化都是针对 union 操作的优化，这里路径压缩是针对 find 的优化；</p>
+<ol>
+<li><p>路径压缩过程</p>
+<ol>
+<li><p>find（4）,就是从 4 开始向上遍历找到根节点 0；<br><img src="resources/1F02CF0039DF061E9EC54246ED8E12E4.jpg" alt="IMAGE"></p>
+</li>
+<li><p>路径压缩就是把这个路径缩短，具体思路是，在从 4 开始往上遍历时，如果 4 的父节点不是根节点，那么就把 4 网上挪一级；<br><img src="resources/D19CF5AA248D0D48F2F5543BDB45BF06.jpg" alt="IMAGE"><br>如果 4 的父节点3 就是根，那么 4就不往上挪了，还是指向 3；</p>
+</li>
+<li><p>接下来就判断 2 节点的父节点是否是根节点，如果不是，2 节点网上挪；这里跳过了 3（跳了两步），因为在 4 节点逻辑中会判断 3 的父节点是否是根节点，所以如果 3 的父节点不是根节点，那么 3 的父节点肯定是存在的；极端情况，当对 1 节点进行挪动时，跳两步也是没问题的，虽然 0 是根节点，但是 0 节点的父节点指向自身，也是能访问的，相当于 1 挪动到 0 节点的父节点（自身）上，逻辑仍然正确；<br><img src="resources/6AA00327741C4AD1862D9C90896E7532.jpg" alt="IMAGE"></p>
+</li>
+<li><p>路径压缩前后对比<br><img src="resources/7CA8806B0E88D7F6582143397EBDEBED.jpg" alt="IMAGE"></p>
+</li>
+</ol>
+</li>
+<li><p>实现，修改 find()<br><img src="resources/1AC485EE03AA370480AD991A5B4493F1.jpg" alt="IMAGE"></p>
+</li>
+<li><p>路径压缩优化<br>上面路径压缩的结果不是最优的，最优结果应该是这样的：<br><img src="resources/6BA59CADD2B27B2EF16C223DE31986A5.jpg" alt="IMAGE"></p>
+<ol>
+<li>这种优化的原理是：所有节点都指向他们的根节点，那么从 4 开始，4 应该指向 3 的根节点，3 指向 2 的根节点（这些根节点都是一样的值）；然后 2 指向 1 的根节点，所以这是一个递归过程，即：对 4 优化时，先查找它的父节点的根节点是谁，如果 3 的父节点不是根节点，那么进入下一层递归，找 3 的父节点 2 的根节点是谁，最终找到 1 的根节点是 0，那么此时递归开始返回，2 会指向 1 的根节点0，再返回上一层递归，3 指向 2 的根节点 0，最终 4 指向 3 的根节点也是 0；</li>
+<li>代码实现：返回值是 parent[p]，并且如果 p==parent[p],返回 parent[p]也是没问题的，因为根节点父节点指向自身；<br><img src="resources/6751A4090CD739241A416AB3418D51F1.jpg" alt="IMAGE"></li>
+<li>这个压缩方式有递归开销，不一定最终效果比上一个版本好，实际采用哪个，按需而定；</li>
+</ol>
+</li>
+</ol>
+<h2 id="5-并查集的时间复杂度"><a href="#5-并查集的时间复杂度" class="headerlink" title="5. 并查集的时间复杂度"></a><span style=" color:#e07766">5. 并查集的时间复杂度</span></h2><p>经过这些优化后，时间复杂度不是特别好计算，优化后所有节点与根节点的距离都是 O(1) 的（并查集的一个特点，并查集里不是存储的指向孩子的指针，而是指向父亲的指针，一个节点可以有无数个孩子），所以时间复杂度也应该是 O(1)的；但是路径压缩等优化过程中也会有开销，所以不是准确的 O(1)，而是<strong>近乎</strong>O(1)；优化过程中的开销使用阿尔法函数来表达（具体查资料了解）。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Data-Structure/" rel="tag"># Data Structure</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/03/16/Programming/Data_Mining/Data%20Mining%20%20%E4%BD%BF%E7%94%A8%20k-medoid%20%E6%96%B9%E6%B3%95%E5%88%86%E7%BE%A4%E6%97%B6%E7%9A%84double%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98/" rel="prev" title="Data Mining:使用 k-medoid 方法分群时的double精度问题">
+                  <i class="fa fa-chevron-left"></i> Data Mining:使用 k-medoid 方法分群时的double精度问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/04/28/Programming/Algorithm_and_Data_Structure/C++/Play_Algorithm_and_Data_Structure/4%E7%AB%A0%EF%BC%9A%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/" rel="next" title="4章：堆和堆排序">
+                  4章：堆和堆排序 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Theo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.4/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+
+
+<script>
+NexT.utils.loadComments('.utterances-container', () => {
+  const script = document.createElement('script');
+  script.src = 'https://utteranc.es/client.js';
+  script.setAttribute('repo', "changyukang/changyukang.github.io");
+  script.setAttribute('issue-term', "title");
+  script.setAttribute('theme', "github-light");
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  document.querySelector('.utterances-container').appendChild(script);
+});
+</script>
+
+</body>
+</html>

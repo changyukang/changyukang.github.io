@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="About Fork and Submodule">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何保存submodule的修改">
+<meta property="og:url" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/index.html">
+<meta property="og:site_name" content="Kiwi-Theo">
+<meta property="og:description" content="About Fork and Submodule">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法1.png">
+<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法2.png">
+<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法3.png">
+<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法4.png">
+<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法5.png">
+<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法6.png">
+<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法7.png">
+<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法8.png">
+<meta property="article:published_time" content="2015-01-10T12:57:10.000Z">
+<meta property="article:modified_time" content="2021-01-10T04:19:11.484Z">
+<meta property="article:author" content="Theo">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="Vim">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法1.png">
+
+
+<link rel="canonical" href="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>如何保存submodule的修改 | Kiwi-Theo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Kiwi-Theo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">解决过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%AD%90%E6%A8%A1%E5%9D%97%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">添加子模块遇到的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">解决方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85"><span class="nav-number">3.</span> <span class="nav-text">补充</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Theo"
+      src="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+  <p class="site-author-name" itemprop="name">Theo</p>
+  <div class="site-description" itemprop="description">Never late to study</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/changyukang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;changyukang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiwichangyu.kang@gmail.com" title="E-Mail → mailto:kiwichangyu.kang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+      <meta itemprop="name" content="Theo">
+      <meta itemprop="description" content="Never late to study">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi-Theo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何保存submodule的修改
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-01-10 20:57:10" itemprop="dateCreated datePublished" datetime="2015-01-10T20:57:10+08:00">2015-01-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-10 12:19:11" itemprop="dateModified" datetime="2021-01-10T12:19:11+08:00">2021-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">About Fork and Submodule</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>个人使用<code>Vundle</code>管理插件，并且安装了<code>oh-my-zsh</code>，因为这种安装方式是<code>git clone</code>原作者的库到本地，所以可以实时跟踪作者的更新；我在使用插件时，会做一些个性化修改，但是这些修改不能提交到<code>github</code>，只能本地保存；</p>
+<p>更进一步的需求是：将<code>.vim</code>使用<code>dotfiles</code>方式托管到<code>github</code>上，并且将自己对于插件的修改也托管到<code>github</code>上去;这样就要在<code>dotfiles</code>下建个仓库，并<code>push</code>到<code>github</code>上。</p>
+<p>出现的问题：上述想法在实施的过程中，无法全部<code>git add</code>，个人做过修改的插件（每个插件目录都是一个<code>git</code>库），就会出现无法跟踪，所有<code>git add</code>的方式，都添加不进去。那这样我个人做的修改就无法<code>push</code>到<code>github</code>远端仓库了。</p>
+<h3 id="解决过程"><a href="#解决过程" class="headerlink" title="解决过程"></a>解决过程</h3><p>首先想到使用<code>submoudle</code>的方式来添加插件。</p>
+<p>插件本身就是一个<code>git</code>库，将其以子模块的方式添加进去，但是还有个问题，子模块的库是人家原作者的，你无权<code>push</code>，修改还是在本地。</p>
+<p>那又想起一个方法：将原作者的库<code>fork</code>下来，添加子模块时，添加自己<code>fork</code>下来的库，那么你对这个库是有权<code>push</code>的，那么你把修改<code>push</code>到这个库上，并不会影响原作者的主分支，这样就实现了将你的<code>.vim</code>里面<code>Vundle</code>安装的插件以<code>dotfiles</code>托管到<code>github</code>的目的，并且将自己的修改<code>push</code>到了远端仓库。更进一步，如果你的个人配置真心不错，你还可以<code>pull request</code>，请原作者审核一下，将你的修改<code>merge</code>过去，为开源做贡献！</p>
+<h4 id="添加子模块遇到的问题"><a href="#添加子模块遇到的问题" class="headerlink" title="添加子模块遇到的问题"></a>添加子模块遇到的问题</h4><p>想法是美好的，现实却很残酷，添加过程各种问题。</p>
+<p>首先，<code>windows</code>下添加的子模块在远端仓库对应目录为灰色，无法链接，这个原因已在<a href="http://changyukang.github.io/2015/01/08/Windows%E4%B8%8B%E6%B7%BB%E5%8A%A0git-submodule%EF%BC%8C%E8%BF%9C%E7%AB%AF%E4%BB%93%E5%BA%93%E5%AF%B9%E5%BA%94%E7%9B%AE%E5%BD%95%E4%B8%BA%E7%81%B0%E8%89%B2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/">“<code>Windows</code>下<code>submodule</code>添加失败的解决方法”</a>里描述过了。</p>
+<p>其次，添加的明明是自己<code>fork</code>的库，但是在对应插件目录<code>git remote -v</code>看到的却还是原作者的仓库地址。<br><img src="添加submodule并且可以保存自己的修改的方法1.png" width = "520" alt="图1" align=center /><br><img src="添加submodule并且可以保存自己的修改的方法2.png" width = "520" alt="图2" align=center /></p>
+<p>后来想想，可能是原来自己用作者的库地址添加过一次<code>submodule</code>，已经有了残留，实际上，这种情况下再添加你自己<code>fork</code>的库为<code>submodule</code>时，会有提示：</p>
+<img src="添加submodule并且可以保存自己的修改的方法3.png" width = "520" alt="图3" align=center />
+
+<p>提示已经有一个<code>remote</code>在你想添加为子模块的本地目录中，并且如果想使用那个，就用<code>--force</code>选项，如果想自己定义，就用<code>--name</code>。确实，自己原来添加过一次，并且原来的目录中<code>git remote -v</code>可以看到<code>origin</code>地址是原作者的库地址。怎么办呢？使用<code>--name</code>选项似乎也不行，添加不成功，不知道是否书写方法不对？<br><img src="添加submodule并且可以保存自己的修改的方法4.png" width = "520" alt="图4" align=center /></p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><ol>
+<li><p>去那个目录，<code>git remote remove origin</code>，将那个<code>origin</code>删除，可单是这个似乎不行；</p>
+<img src="添加submodule并且可以保存自己的修改的方法5.png" width = "500" alt="图5" align=center />
+<img src="添加submodule并且可以保存自己的修改的方法6.png" width = "500" alt="图6" align=center />
+
+<p> 这样搞了之后，引出上面<code>git directory *** is found locally with remote: origin</code>的问题。</p>
+</li>
+<li><p>删除<code>.git/modules/mysubmodulefolder</code>（这里替换成上面提示的已经有<code>orgin</code>地址的那个目录，也就是你想添加子模块到的目录）<br>删除后，再根据删除<code>submodule</code>的方法，将各种配置清理干净（主要是<code>.gitmodules</code>和<code>.git/config</code>里的<code>submodule</code>信息以及子模块的存放目录），就可以再次添加<code>submodule</code>了，这次大功告成。</p>
+</li>
+</ol>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>另外提一点，子模块提交和<code>push</code>都要在子模块所在目录进行：<br><img src="添加submodule并且可以保存自己的修改的方法7.png" width = "520" alt="图7" align=center /></p>
+<p>子模块修改提交成功后，返回你自己的库，<code>git add</code>，发现可以添加上了：<br><img src="添加submodule并且可以保存自己的修改的方法8.png" width = "520" alt="图8" align=center /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Git/" rel="tag"># Git</a>
+              <a href="/tags/Vim/" rel="tag"># Vim</a>
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/01/08/Git/Windows%E4%B8%8B%E6%B7%BB%E5%8A%A0git-submodule%EF%BC%8C%E8%BF%9C%E7%AB%AF%E4%BB%93%E5%BA%93%E5%AF%B9%E5%BA%94%E7%9B%AE%E5%BD%95%E4%B8%BA%E7%81%B0%E8%89%B2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" rel="prev" title="Windows下submodule添加失败的解决方法">
+                  <i class="fa fa-chevron-left"></i> Windows下submodule添加失败的解决方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/01/16/Git/%E8%BF%9B%E4%B8%80%E6%AD%A5%E6%80%9D%E8%80%83%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98github%E6%89%98%E7%AE%A1%E7%9A%84vim%E6%8F%92%E4%BB%B6%E7%9A%84%E4%B8%AA%E4%BA%BA%E4%BF%AE%E6%94%B9/" rel="next" title="进一步思考：如何保存github托管的vim插件的个人修改">
+                  进一步思考：如何保存github托管的vim插件的个人修改 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Theo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.4/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+
+
+<script>
+NexT.utils.loadComments('.utterances-container', () => {
+  const script = document.createElement('script');
+  script.src = 'https://utteranc.es/client.js';
+  script.setAttribute('repo', "changyukang/changyukang.github.io");
+  script.setAttribute('issue-term', "title");
+  script.setAttribute('theme', "github-light");
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  document.querySelector('.utterances-container').appendChild(script);
+});
+</script>
+
+</body>
+</html>

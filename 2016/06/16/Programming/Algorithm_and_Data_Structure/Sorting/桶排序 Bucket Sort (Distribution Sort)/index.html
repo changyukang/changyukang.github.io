@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="sorting algorithm about insertion sort">
+<meta property="og:type" content="article">
+<meta property="og:title" content="桶排序 Bucket Sort (Distribution Sort)">
+<meta property="og:url" content="https://changyukang.github.io/2016/06/16/Programming/Algorithm_and_Data_Structure/Sorting/%E6%A1%B6%E6%8E%92%E5%BA%8F%20Bucket%20Sort%20(Distribution%20Sort)/index.html">
+<meta property="og:site_name" content="Kiwi-Theo">
+<meta property="og:description" content="sorting algorithm about insertion sort">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://changyukang.github.io/2016/06/16/Programming/Algorithm_and_Data_Structure/Sorting/%E6%A1%B6%E6%8E%92%E5%BA%8F%20Bucket%20Sort%20(Distribution%20Sort)/resources/18102EBEE7438AF7C3A0D844D84E464B.jpg">
+<meta property="article:published_time" content="2016-06-16T14:15:39.000Z">
+<meta property="article:modified_time" content="2021-01-10T04:19:11.782Z">
+<meta property="article:author" content="Theo">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Sorting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://changyukang.github.io/2016/06/16/Programming/Algorithm_and_Data_Structure/Sorting/%E6%A1%B6%E6%8E%92%E5%BA%8F%20Bucket%20Sort%20(Distribution%20Sort)/resources/18102EBEE7438AF7C3A0D844D84E464B.jpg">
+
+
+<link rel="canonical" href="https://changyukang.github.io/2016/06/16/Programming/Algorithm_and_Data_Structure/Sorting/%E6%A1%B6%E6%8E%92%E5%BA%8F%20Bucket%20Sort%20(Distribution%20Sort)/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>桶排序 Bucket Sort (Distribution Sort) | Kiwi-Theo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Kiwi-Theo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">41</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Bucket-Sort-Distribution-Sort"><span class="nav-number">1.</span> <span class="nav-text">Bucket Sort (Distribution Sort)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%97%E6%B3%95%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">1. 算法描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">2. 算法分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%98%A0%E5%B0%84%E5%87%BD%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">3. 映射函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0-Java-amp-C"><span class="nav-number">1.4.</span> <span class="nav-text">3. 算法实现(Java &amp; C++)</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Theo"
+      src="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+  <p class="site-author-name" itemprop="name">Theo</p>
+  <div class="site-description" itemprop="description">Never late to study</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/changyukang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;changyukang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:kiwichangyu.kang@gmail.com" title="E-Mail → mailto:kiwichangyu.kang@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-nd.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2016/06/16/Programming/Algorithm_and_Data_Structure/Sorting/%E6%A1%B6%E6%8E%92%E5%BA%8F%20Bucket%20Sort%20(Distribution%20Sort)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://changyukang.github.io/2015/09/15/英语/英语Level/Level11.png">
+      <meta itemprop="name" content="Theo">
+      <meta itemprop="description" content="Never late to study">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi-Theo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          桶排序 Bucket Sort (Distribution Sort)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-06-16 22:15:39" itemprop="dateCreated datePublished" datetime="2016-06-16T22:15:39+08:00">2016-06-16</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-10 12:19:11" itemprop="dateModified" datetime="2021-01-10T12:19:11+08:00">2021-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm_and_Data_Structure</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Algorithm-and-Data-Structure/Sorting/" itemprop="url" rel="index"><span itemprop="name">Sorting</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">sorting algorithm about insertion sort</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Bucket-Sort-Distribution-Sort"><a href="#Bucket-Sort-Distribution-Sort" class="headerlink" title="Bucket Sort (Distribution Sort)"></a>Bucket Sort (Distribution Sort)</h1><h2 id="1-算法描述"><a href="#1-算法描述" class="headerlink" title="1. 算法描述"></a>1. 算法描述</h2><p>桶排序是计数排序的升级版。它利用了函数的映射关系，高效与否的关键就在于这个映射函数的确定。</p>
+<p>桶排序 (Bucket sort)的工作的原理：假设输入数据服从均匀分布，将数据分到有限数量的桶里，每个桶再分别排序（此处可以使用别的排序算法，最好是稳定的，比如插入排序等）。</p>
+<ol>
+<li>设置固定空桶数</li>
+<li>将数据放到对应的空桶中</li>
+<li>将每个不为空的桶进行排序</li>
+<li>拼接不为空的桶中的数据，得到结果</li>
+</ol>
+<p>排序过程：<br><img src="resources/18102EBEE7438AF7C3A0D844D84E464B.jpg" alt="IMAGE"></p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">桶排序</span><br><span class="line">原始数据</span><br><span class="line">34<span class="number"> 54 </span><span class="number"> 12 </span><span class="number"> 78 </span>3 <span class="number"> 45 </span><span class="number"> 9 </span> </span><br><span class="line"></span><br><span class="line">bucketCount = 2;</span><br><span class="line"></span><br><span class="line">range = <span class="number"> 78 </span>/<span class="number"> 2 </span>+<span class="number"> 1 </span>= 40;</span><br><span class="line">此处可以设置多个桶，如此这里换用</span><br><span class="line"></span><br><span class="line">[34]</span><br><span class="line"></span><br><span class="line">[34]  [54]</span><br><span class="line"></span><br><span class="line">[12 34]  [54]</span><br><span class="line"></span><br><span class="line">[12 34]  [54 78]</span><br><span class="line"></span><br><span class="line">[3<span class="number"> 12 </span>34]  [54 78]</span><br><span class="line"></span><br><span class="line">[3<span class="number"> 12 </span>34]  [45<span class="number"> 54 </span>78]</span><br><span class="line"></span><br><span class="line">[3<span class="number"> 9 </span>12 34]  [45<span class="number"> 54 </span>78]</span><br><span class="line"></span><br><span class="line">排序结果</span><br><span class="line">[3<span class="number"> 9 </span>12<span class="number"> 34 </span>45<span class="number"> 54 </span>78]</span><br></pre></td></tr></table></figure>
+<h2 id="2-算法分析"><a href="#2-算法分析" class="headerlink" title="2. 算法分析"></a>2. 算法分析</h2><p>最好情况(Best case)：当输入的数据可以均匀的分配到每一个桶中。<br>最差情况(Worst case)：当输入的数据被分配到了同一个桶中。</p>
+<p>桶排序最好情况下使用线性时间O(n)，桶排序的时间复杂度，取决与对各个桶之间数据进行排序的时间复杂度，因为其它部分的时间复杂度都为O(n)。很显然，桶划分的越小，各个桶之间的数据越少，排序所用的时间也会越少。但相应的空间消耗就会增大。</p>
+<p><u>所以，为了使桶排序更加高效，我们需要做到这两点：</p>
+<ol>
+<li>在额外空间充足的情况下，尽量增大桶的数量</li>
+<li>使用的映射函数能够将输入的 N 个数据均匀的分配到 K 个桶中</u></li>
+</ol>
+<p>桶排序利用函数的映射关系，减少了几乎所有的比较工作。实际上，桶排序的f(k)值的计算，其作用就相当于快排中划分，已经把大量数据分割成了基本有序的数据块(桶)。然后只需要对桶中的少量数据做先进的比较排序即可。</p>
+<p>对N个关键字进行桶排序的时间复杂度分为两个部分：</p>
+<ol>
+<li>循环计算每个关键字的桶映射函数，这个时间复杂度是O(N)。</li>
+<li>利用先进的比较排序算法对每个桶内的所有数据进行排序，其时间复杂度为 ∑ O(N*logN) 。其中 N 为第 i 个桶的数据量。</li>
+</ol>
+<p>很显然，第(2)部分是桶排序性能好坏的决定因素。尽量减少桶内数据的数量是提高效率的唯一办法(因为基于比较排序的最好平均时间复杂度只能达到O(N*logN)了)。因此，我们需要尽量做到下面两点：</p>
+<ol>
+<li> 映射函数f(k)能够将N个数据平均的分配到M个桶中，这样每个桶就有[N/M]个数据量。</li>
+<li>尽量的增大桶的数量。极限情况下每个桶只能得到一个数据，这样就完全避开了桶内数据的“比较”排序操作。 当然，做到这一点很不容易，数据量巨大的情况下，f(k)函数会使得桶集合的数量巨大，空间浪费严重。这就是一个时间代价和空间代价的权衡问题了。</li>
+</ol>
+<p>对于N个待排数据，M个桶，平均每个桶[N/M]个数据的桶排序平均时间复杂度为：<br>$O(N)+O(M*(N/M)<em>log(N/M))=O(N+N</em>(logN-logM))=O(N+N<em>logN-N</em>logM)$<br>当N=M时，即极限情况下每个桶只有一个数据时。桶排序的最好效率能够达到O(N)。</p>
+<p>总结： 桶排序的平均时间复杂度为线性的O(N+C)，其中C=N*(logN-logM)。如果相对于同样的N，桶数量M越大，其效率越高，最好的时间复杂度达到O(N)。 当然桶排序的空间复杂度 为O(N+M)，如果输入数据非常庞大，而桶的数量也非常多，则空间代价无疑是昂贵的。此外，桶排序是稳定的。</p>
+<h2 id="3-映射函数"><a href="#3-映射函数" class="headerlink" title="3. 映射函数"></a>3. 映射函数</h2><p><strong>1. 桶排序映射函数和哈希表哈希函数的区别</strong>：<br><u>桶排序的映射函数类似哈希表中的哈希函数，但是不完全一致，差别在下面：</p>
+<ol>
+<li>哈希函数映射所有的元素，但是不保证每个桶之间是顺序的，即前面的桶的元素不都比后面的小；</li>
+<li>桶排序中则要顾及这一点，前面桶就要存储较小的数；</li>
+<li>两者都是分布越均匀越好。</u></li>
+</ol>
+<p><strong>2. 计数排序、基数排序和桶排序的区别：</strong><br><strong>Counting Sort</strong>:数字范围小，直接根据数字进行排序，辅助数组 C 中记录小于等于某个数字的元素个数；<br><strong>Radix Sort</strong>:数字范围大，通过从低到高对每个数字进行 Counting Sort，对于 n 位数字，经过 n 轮比较后，得到的最终结果就是最终有序序列；<br><strong>Bucket Sort</strong>: 数字范围大，通过映射函数将数字尽量均匀的映射到各个桶中，之后每个桶使用稳定的 Insertion Sort 进行排序，最后按照桶的顺序将数字输出；前提是先遍历元素找出最大最小元素值，据此确定待排序元素的范围，根据这个范围和每个桶中存储元素的最大个数确定桶的个数，之后通过映射函数将元素归入桶中；</p>
+<p><strong>3. 桶排序映射函数思想如下，这个没有哈希函数那么多样化</strong>：</p>
+<blockquote>
+<p>calculate bucketCount:<br>bucketCount = (maxValue - minValue) / bucketSize) + 1;</p>
+<p>mapping function f(key):<br>index = (arr[i] - minValue) / <strong>bucketSize</strong>;</p>
+</blockquote>
+<p>映射函数示例：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Original</span> data:</span><br><span class="line"><span class="attribute">21</span>, <span class="number">34</span>, <span class="number">55</span>, <span class="number">24</span>,<span class="number">27</span>, <span class="number">109</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">Assume</span> bucketSize = <span class="number">2</span></span><br><span class="line"><span class="attribute">So</span>, bucketCount = (<span class="number">109</span>-<span class="number">21</span>)/<span class="number">2</span> + <span class="number">1</span> = <span class="number">45</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">bucket</span>[<span class="number">0</span>]: (<span class="number">21</span>-<span class="number">21</span>)/<span class="number">2</span> = <span class="number">0</span></span><br><span class="line"><span class="attribute">bucket</span>[<span class="number">1</span>]: (<span class="number">34</span>-<span class="number">21</span>)/<span class="number">2</span> = <span class="number">6</span></span><br><span class="line"><span class="attribute">bucket</span>[<span class="number">2</span>]: (<span class="number">55</span>-<span class="number">21</span>)/<span class="number">2</span> = <span class="number">17</span></span><br><span class="line"><span class="attribute">bucket</span>[<span class="number">3</span>]: (<span class="number">24</span>-<span class="number">21</span>)/<span class="number">2</span> = <span class="number">1</span></span><br><span class="line"><span class="attribute">bucket</span>[<span class="number">4</span>]: (<span class="number">27</span>-<span class="number">21</span>)/<span class="number">2</span> = <span class="number">3</span></span><br><span class="line"><span class="attribute">bucket</span>[<span class="number">5</span>]: (<span class="number">109</span>-<span class="number">21</span>)/<span class="number">2</span> = <span class="number">44</span></span><br></pre></td></tr></table></figure>
+<h2 id="3-算法实现-Java-amp-C"><a href="#3-算法实现-Java-amp-C" class="headerlink" title="3. 算法实现(Java &amp; C++)"></a>3. 算法实现(Java &amp; C++)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BucketSort</span> <span class="keyword">implements</span> <span class="title">IArraySort</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> InsertSort insertSort = <span class="keyword">new</span> InsertSort();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] sort(<span class="keyword">int</span>[] sourceArray) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 对 arr 进行拷贝，不改变参数内容</span></span><br><span class="line">        <span class="keyword">int</span>[] arr = Arrays.copyOf(sourceArray, sourceArray.length);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> bucketSort(arr, <span class="number">5</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] bucketSort(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> bucketSize) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr.length == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> arr;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> minValue = arr[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> maxValue = arr[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> value : arr) &#123;</span><br><span class="line">            <span class="keyword">if</span> (value &lt; minValue) &#123;</span><br><span class="line">                minValue = value;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (value &gt; maxValue) &#123;</span><br><span class="line">                maxValue = value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//bucketSize 是每个桶预期存储的元素个数</span></span><br><span class="line">        <span class="keyword">int</span> bucketCount = (<span class="keyword">int</span>) Math.floor((maxValue - minValue) / bucketSize) + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span>[][] buckets = <span class="keyword">new</span> <span class="keyword">int</span>[bucketCount][<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 利用映射函数将数据分配到各个桶中</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> index = (<span class="keyword">int</span>) Math.floor((arr[i] - minValue) / bucketSize);</span><br><span class="line">            buckets[index] = arrAppend(buckets[index], arr[i]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> arrIndex = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span>[] bucket : buckets) &#123;</span><br><span class="line">            <span class="keyword">if</span> (bucket.length &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 对每个桶进行排序，这里使用了插入排序</span></span><br><span class="line">            bucket = insertSort.sort(bucket);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> value : bucket) &#123;</span><br><span class="line">                arr[arrIndex++] = value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> arr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] arrAppend(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> value) &#123;</span><br><span class="line">        arr = Arrays.copyOf(arr, arr.length + <span class="number">1</span>);</span><br><span class="line">        arr[arr.length - <span class="number">1</span>] = value;</span><br><span class="line">        <span class="keyword">return</span> arr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iterator&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> BUCKET_NUM = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span>&#123;</span></span><br><span class="line">        explicit ListNode(int i=0):mData(i),mNext(NULL)&#123;&#125;</span><br><span class="line">        ListNode* mNext;</span><br><span class="line">        <span class="keyword">int</span> mData;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">ListNode* <span class="title">insert</span><span class="params">(ListNode* head,<span class="keyword">int</span> val)</span></span>&#123;</span><br><span class="line">        ListNode dummyNode;</span><br><span class="line">        ListNode *newNode = <span class="keyword">new</span> ListNode(val);</span><br><span class="line">        ListNode *pre,*curr;</span><br><span class="line">        dummyNode.mNext = head;</span><br><span class="line">        pre = &amp;dummyNode;</span><br><span class="line">        curr = head;</span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">NULL</span>!=curr &amp;&amp; curr-&gt;mData&lt;=val)&#123;</span><br><span class="line">                pre = curr;</span><br><span class="line">                curr = curr-&gt;mNext;</span><br><span class="line">        &#125;</span><br><span class="line">        newNode-&gt;mNext = curr;</span><br><span class="line">        pre-&gt;mNext = newNode;</span><br><span class="line">        <span class="keyword">return</span> dummyNode.mNext;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">ListNode* <span class="title">Merge</span><span class="params">(ListNode *head1,ListNode *head2)</span></span>&#123;</span><br><span class="line">        ListNode dummyNode;</span><br><span class="line">        ListNode *dummy = &amp;dummyNode;</span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">NULL</span>!=head1 &amp;&amp; <span class="literal">NULL</span>!=head2)&#123;</span><br><span class="line">                <span class="keyword">if</span>(head1-&gt;mData &lt;= head2-&gt;mData)&#123;</span><br><span class="line">                        dummy-&gt;mNext = head1;</span><br><span class="line">                        head1 = head1-&gt;mNext;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                        dummy-&gt;mNext = head2;</span><br><span class="line">                        head2 = head2-&gt;mNext;</span><br><span class="line">                &#125;</span><br><span class="line">                dummy = dummy-&gt;mNext;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(<span class="literal">NULL</span>!=head1) dummy-&gt;mNext = head1;</span><br><span class="line">        <span class="keyword">if</span>(<span class="literal">NULL</span>!=head2) dummy-&gt;mNext = head2;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> dummyNode.mNext;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BucketSort</span><span class="params">(<span class="keyword">int</span> n,<span class="keyword">int</span> arr[])</span></span>&#123;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;ListNode*&gt; <span class="title">buckets</span><span class="params">(BUCKET_NUM,(ListNode*)(<span class="number">0</span>))</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">                <span class="keyword">int</span> index = arr[i]/BUCKET_NUM;</span><br><span class="line">                ListNode *head = buckets.at(index);</span><br><span class="line">                buckets.at(index) = insert(head,arr[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode *head = buckets.at(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;BUCKET_NUM;++i)&#123;</span><br><span class="line">                head = Merge(head,buckets.at(i));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">                arr[i] = head-&gt;mData;</span><br><span class="line">                head = head-&gt;mNext;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+              <a href="/tags/Sorting/" rel="tag"># Sorting</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/06/11/Programming/Algorithm_and_Data_Structure/Sorting/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%EF%BC%88Insertion%20Sort%EF%BC%89%E5%92%8C%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%EF%BC%88Shell%20Sort%EF%BC%89/" rel="prev" title="插入排序（Insertion Sort）和希尔排序（Shell Sort）">
+                  <i class="fa fa-chevron-left"></i> 插入排序（Insertion Sort）和希尔排序（Shell Sort）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/06/17/Programming/Algorithm_and_Data_Structure/Sorting/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F(Merge%20Sort)/" rel="next" title="归并排序(Merge Sort)">
+                  归并排序(Merge Sort) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Theo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.4/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+
+
+<script>
+NexT.utils.loadComments('.utterances-container', () => {
+  const script = document.createElement('script');
+  script.src = 'https://utteranc.es/client.js';
+  script.setAttribute('repo', "changyukang/changyukang.github.io");
+  script.setAttribute('issue-term', "title");
+  script.setAttribute('theme', "github-light");
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  document.querySelector('.utterances-container').appendChild(script);
+});
+</script>
+
+</body>
+</html>
