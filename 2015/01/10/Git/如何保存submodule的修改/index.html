@@ -20,23 +20,23 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"changyukang.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+    var CONFIG = {"hostname":"kang-theo.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
 <meta name="description" content="About Fork and Submodule">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何保存submodule的修改">
-<meta property="og:url" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/index.html">
+<meta property="og:url" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/index.html">
 <meta property="og:site_name" content="Kiwi-Theo">
 <meta property="og:description" content="About Fork and Submodule">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法1.png">
-<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法2.png">
-<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法3.png">
-<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法4.png">
-<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法5.png">
-<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法6.png">
-<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法7.png">
-<meta property="og:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法8.png">
+<meta property="og:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法1.png">
+<meta property="og:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法2.png">
+<meta property="og:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法3.png">
+<meta property="og:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法4.png">
+<meta property="og:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法5.png">
+<meta property="og:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法6.png">
+<meta property="og:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法7.png">
+<meta property="og:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法8.png">
 <meta property="article:published_time" content="2015-01-10T12:57:10.000Z">
 <meta property="article:modified_time" content="2021-01-10T04:19:11.484Z">
 <meta property="article:author" content="Theo">
@@ -44,10 +44,10 @@
 <meta property="article:tag" content="Vim">
 <meta property="article:tag" content="Hexo">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法1.png">
+<meta name="twitter:image" content="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/添加submodule并且可以保存自己的修改的方法1.png">
 
 
-<link rel="canonical" href="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/">
+<link rel="canonical" href="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/">
 
 
 <script class="page-configurations">
@@ -296,7 +296,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://changyukang.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/">
+    <link itemprop="mainEntityOfPage" href="https://kang-theo.github.io/2015/01/10/Git/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98submodule%E7%9A%84%E4%BF%AE%E6%94%B9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://kang-theo.github.io/2015/09/15/英语/英语Level/Level11.png">
@@ -357,7 +357,7 @@
 <p>插件本身就是一个<code>git</code>库，将其以子模块的方式添加进去，但是还有个问题，子模块的库是人家原作者的，你无权<code>push</code>，修改还是在本地。</p>
 <p>那又想起一个方法：将原作者的库<code>fork</code>下来，添加子模块时，添加自己<code>fork</code>下来的库，那么你对这个库是有权<code>push</code>的，那么你把修改<code>push</code>到这个库上，并不会影响原作者的主分支，这样就实现了将你的<code>.vim</code>里面<code>Vundle</code>安装的插件以<code>dotfiles</code>托管到<code>github</code>的目的，并且将自己的修改<code>push</code>到了远端仓库。更进一步，如果你的个人配置真心不错，你还可以<code>pull request</code>，请原作者审核一下，将你的修改<code>merge</code>过去，为开源做贡献！</p>
 <h4 id="添加子模块遇到的问题"><a href="#添加子模块遇到的问题" class="headerlink" title="添加子模块遇到的问题"></a>添加子模块遇到的问题</h4><p>想法是美好的，现实却很残酷，添加过程各种问题。</p>
-<p>首先，<code>windows</code>下添加的子模块在远端仓库对应目录为灰色，无法链接，这个原因已在<a href="http://changyukang.github.io/2015/01/08/Windows%E4%B8%8B%E6%B7%BB%E5%8A%A0git-submodule%EF%BC%8C%E8%BF%9C%E7%AB%AF%E4%BB%93%E5%BA%93%E5%AF%B9%E5%BA%94%E7%9B%AE%E5%BD%95%E4%B8%BA%E7%81%B0%E8%89%B2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/">“<code>Windows</code>下<code>submodule</code>添加失败的解决方法”</a>里描述过了。</p>
+<p>首先，<code>windows</code>下添加的子模块在远端仓库对应目录为灰色，无法链接，这个原因已在<a target="_blank" rel="noopener" href="http://changyukang.github.io/2015/01/08/Windows%E4%B8%8B%E6%B7%BB%E5%8A%A0git-submodule%EF%BC%8C%E8%BF%9C%E7%AB%AF%E4%BB%93%E5%BA%93%E5%AF%B9%E5%BA%94%E7%9B%AE%E5%BD%95%E4%B8%BA%E7%81%B0%E8%89%B2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/">“<code>Windows</code>下<code>submodule</code>添加失败的解决方法”</a>里描述过了。</p>
 <p>其次，添加的明明是自己<code>fork</code>的库，但是在对应插件目录<code>git remote -v</code>看到的却还是原作者的仓库地址。<br><img src="添加submodule并且可以保存自己的修改的方法1.png" width = "520" alt="图1" align=center /><br><img src="添加submodule并且可以保存自己的修改的方法2.png" width = "520" alt="图2" align=center /></p>
 <p>后来想想，可能是原来自己用作者的库地址添加过一次<code>submodule</code>，已经有了残留，实际上，这种情况下再添加你自己<code>fork</code>的库为<code>submodule</code>时，会有提示：</p>
 <img src="添加submodule并且可以保存自己的修改的方法3.png" width = "520" alt="图3" align=center />
